@@ -5,6 +5,12 @@ const API = axios.create({
     headers: { 'Content-Type': 'application/json' }
 });
 
+// Helper to get base server URL for images/uploads (strips /api)
+export const getServerURL = () => {
+    const base = import.meta.env.VITE_API_URL || 'https://drivehire-api.onrender.com/api';
+    return base.replace(/\/api$/, '');
+};
+
 // Attach JWT on every request
 API.interceptors.request.use((config) => {
     const token = localStorage.getItem('drivehire_token');
@@ -31,6 +37,11 @@ export const loginUser = (data) => API.post('/auth/login', data);
 export const getMe = () => API.get('/auth/me');
 export const forgotPassword = (data) => API.post('/auth/forgot-password', data);
 export const resetPassword = (data) => API.post('/auth/reset-password', data);
+export const uploadAvatar = (file) => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    return API.put('/auth/avatar', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+};
 
 // Customer
 export const getProfile = () => API.get('/customers/profile');

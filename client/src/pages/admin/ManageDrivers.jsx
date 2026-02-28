@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAdminDrivers, approveDriver, rejectDriver, getDriverDocuments, verifyDriverDocuments } from '../../services/api';
+import { getAdminDrivers, approveDriver, rejectDriver, getDriverDocuments, verifyDriverDocuments, getServerURL } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiFileText, FiCheckCircle, FiXCircle, FiEye, FiX } from 'react-icons/fi';
 
@@ -184,8 +184,8 @@ export default function ManageDrivers() {
                                         border: '2px solid var(--border)', height: 200,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         background: 'var(--bg-primary)', cursor: 'pointer'
-                                    }} onClick={() => window.open(`http://localhost:5000${docModal.licenseImage}`, '_blank')}>
-                                        <img src={`http://localhost:5000${docModal.licenseImage}`} alt="License"
+                                    }} onClick={() => window.open(`${getServerURL()}${docModal.licenseImage}`, '_blank')}>
+                                        <img src={`${getServerURL()}${docModal.licenseImage}`} alt="License"
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                 ) : (
@@ -204,8 +204,8 @@ export default function ManageDrivers() {
                                         border: '2px solid var(--border)', height: 200,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         background: 'var(--bg-primary)', cursor: 'pointer'
-                                    }} onClick={() => window.open(`http://localhost:5000${docModal.aadhaarImage}`, '_blank')}>
-                                        <img src={`http://localhost:5000${docModal.aadhaarImage}`} alt="Aadhaar"
+                                    }} onClick={() => window.open(`${getServerURL()}${docModal.aadhaarImage}`, '_blank')}>
+                                        <img src={`${getServerURL()}${docModal.aadhaarImage}`} alt="Aadhaar"
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                 ) : (
@@ -227,8 +227,8 @@ export default function ManageDrivers() {
                                     border: '2px solid var(--border)', height: 180, maxWidth: 300,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     background: 'var(--bg-primary)', cursor: 'pointer'
-                                }} onClick={() => window.open(`http://localhost:5000${docModal.idProofImage}`, '_blank')}>
-                                    <img src={`http://localhost:5000${docModal.idProofImage}`} alt="ID Proof"
+                                }} onClick={() => window.open(`${getServerURL()}${docModal.idProofImage}`, '_blank')}>
+                                    <img src={`${getServerURL()}${docModal.idProofImage}`} alt="ID Proof"
                                         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                 </div>
                             </div>

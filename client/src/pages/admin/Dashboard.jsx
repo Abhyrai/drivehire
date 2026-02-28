@@ -198,7 +198,7 @@ export default function AdminDashboard() {
                             {recentBookings.slice(0, 8).map((b) => (
                                 <tr key={b._id}>
                                     <td>{b.customerId?.name || '—'}</td>
-                                    <td>{b.driverName || '—'}</td>
+                                    <td>{b.driverId?.userId?.name || '—'}</td>
                                     <td>{b.pickupLocation}</td>
                                     <td><span className={`badge badge-${b.status === 'completed' ? 'success' : b.status === 'cancelled' ? 'danger' : b.status === 'active' ? 'info' : 'warning'}`}>{b.status}</span></td>
                                     <td>{formatINR(b.totalPrice)}</td>

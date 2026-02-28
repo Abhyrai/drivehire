@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { updateProfile, getCustomerBookings, getInvoices } from '../../services/api';
+import { updateProfile, getCustomerBookings, getInvoices, uploadAvatar, getServerURL } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiUser, FiMail, FiPhone, FiMapPin, FiCalendar, FiDollarSign, FiShield, FiEdit3, FiCheckCircle } from 'react-icons/fi';
 import AvatarUpload from '../../components/AvatarUpload';
@@ -10,6 +10,14 @@ export default function CustomerProfile() {
     const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '', city: user?.city || '' });
     const [loading, setLoading] = useState(false);
     const [stats, setStats] = useState({ totalBookings: 0, activeBookings: 0, totalSpent: 0 });
+
+    const handleAvatarUpload = async (file) => {
+        try {
+            const { data } = await uploadAvatar(file);
+            setUser({ ...user, avatar: data.avatar });
+            toast.success('Profile picture updated! 📸');
+        } catch (err) { toast.error('Failed to upload photo'); }
+    };
 
     useEffect(() => {
         Promise.all([getCustomerBookings(), getInvoices()])
@@ -69,8 +77,9 @@ export default function CustomerProfile() {
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-md)' }}>
                             <AvatarUpload
                                 name={user?.name}
-                                currentImage={user?.avatar}
-                                editable={false}
+                                currentImage={user?.avatar ? `${getServerURL()}${user.avatar}` : null}
+                                onUpload={handleAvatarUpload}
+                                editable={true}
                                 size={100}
                             />
                         </div>

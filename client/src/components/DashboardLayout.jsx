@@ -20,18 +20,14 @@ const navItems = {
         { path: '/customer/favorites', label: 'Favorites', icon: <FiHeart /> },
         { path: '/customer/vehicles', label: 'My Vehicles', icon: <FiTruck /> },
         { path: '/customer/invoices', label: 'Invoices', icon: <FiFileText /> },
-        { path: '/customer/profile', label: 'Profile', icon: <FiUser /> },
         { path: '/customer/support', label: 'Help & Support', icon: <FiHelpCircle /> },
-        { path: '/settings', label: 'Settings', icon: <FiSettings /> },
     ],
     driver: [
         { path: '/driver', label: 'Dashboard', icon: <FiHome /> },
         { path: '/driver/jobs', label: 'Job Requests', icon: <FiBriefcase /> },
         { path: '/driver/earnings', label: 'Earnings', icon: <FiDollarSign /> },
         { path: '/driver/reviews', label: 'My Reviews', icon: <FiStar /> },
-        { path: '/driver/profile', label: 'Profile', icon: <FiUser /> },
         { path: '/driver/support', label: 'Help & Support', icon: <FiHelpCircle /> },
-        { path: '/settings', label: 'Settings', icon: <FiSettings /> },
     ],
     admin: [
         { path: '/admin', label: 'Dashboard', icon: <FiBarChart2 /> },
@@ -41,7 +37,6 @@ const navItems = {
         { path: '/admin/pricing', label: 'Pricing Rules', icon: <FiSettings /> },
         { path: '/admin/payments', label: 'Payments', icon: <FiCreditCard /> },
         { path: '/admin/support', label: 'Support Tickets', icon: <FiMessageCircle /> },
-        { path: '/settings', label: 'Settings', icon: <FiSettings /> },
     ]
 };
 

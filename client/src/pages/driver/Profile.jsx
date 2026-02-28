@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { getDriverProfile, updateDriverProfile, uploadDocuments } from '../../services/api';
+import { getDriverProfile, updateDriverProfile, uploadDocuments, getServerURL, uploadAvatar } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiUploadCloud, FiCheckCircle, FiAlertCircle, FiClock, FiXCircle, FiShield } from 'react-icons/fi';
 import AvatarUpload from '../../components/AvatarUpload';
@@ -15,6 +15,13 @@ export default function DriverProfilePage() {
     const [docForm, setDocForm] = useState({ aadhaarNumber: '', licenseNumber: '' });
     const [files, setFiles] = useState({ licenseImage: null, aadhaarImage: null });
     const [uploading, setUploading] = useState(false);
+
+    const handleAvatarUpload = async (file) => {
+        try {
+            const { data } = await uploadAvatar(file);
+            toast.success('Profile picture updated! 📸');
+        } catch (err) { toast.error('Failed to upload photo'); }
+    };
 
     useEffect(() => {
         loadProfile();
@@ -107,7 +114,13 @@ export default function DriverProfilePage() {
         <div>
             <div className="page-header">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)', flexWrap: 'wrap' }}>
-                    <AvatarUpload name={driver.userId?.name} editable={false} size={70} />
+                    <AvatarUpload
+                        name={driver.userId?.name}
+                        currentImage={driver.userId?.avatar ? `${getServerURL()}${driver.userId.avatar}` : null}
+                        onUpload={handleAvatarUpload}
+                        editable={true}
+                        size={70}
+                    />
                     <div>
                         <h1 style={{ margin: 0 }}>My Profile 👤</h1>
                         <p style={{ margin: '4px 0 0' }}>Update your driver profile and verify documents</p>
@@ -166,7 +179,7 @@ export default function DriverProfilePage() {
                                     border: '1px solid var(--border)', height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     background: 'var(--bg-secondary)'
                                 }}>
-                                    <img src={`http://localhost:5000${driver.licenseImage}`} alt="License" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                    <img src={`${getServerURL()}${driver.licenseImage}`} alt="License" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                 </div>
                             </div>
                         )}
@@ -178,7 +191,7 @@ export default function DriverProfilePage() {
                                     border: '1px solid var(--border)', height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     background: 'var(--bg-secondary)'
                                 }}>
-                                    <img src={`http://localhost:5000${driver.aadhaarImage}`} alt="Aadhaar" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                    <img src={`${getServerURL()}${driver.aadhaarImage}`} alt="Aadhaar" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                 </div>
                             </div>
                         )}

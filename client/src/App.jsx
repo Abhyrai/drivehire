@@ -110,6 +110,7 @@ function App() {
 
                         {/* Shared */}
                         <Route path="/settings" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
+                        <Route path="/change-password" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><ChangePassword /></DashboardLayout></ProtectedRoute>} />
 
                         {/* 404 */}
                         <Route path="*" element={<NotFound />} />
