@@ -65,7 +65,7 @@ export default function DashboardLayout({ children }) {
                     style={{ marginRight: '0.5rem' }}>
                     {sidebarOpen ? <FiX /> : <FiMenu />}
                 </button>
-                <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+                <div className="logo" onClick={() => navigate(user ? `/${user.role === 'customer' ? 'customer' : user.role === 'driver' ? 'driver' : 'admin'}` : '/')} style={{ cursor: 'pointer' }}>
                     <span>🚗</span> DriveHire
                 </div>
                 <div className="nav-links">

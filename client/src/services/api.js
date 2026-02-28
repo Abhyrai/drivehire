@@ -44,7 +44,7 @@ export const uploadAvatar = (file) => {
 };
 
 // Customer
-export const getProfile = () => API.get('/customers/profile');
+export const getProfile = () => API.get('/auth/me');
 export const updateProfile = (data) => API.put('/customers/profile', data);
 export const getVehicles = () => API.get('/customers/vehicles');
 export const addVehicle = (data) => API.post('/customers/vehicles', data);

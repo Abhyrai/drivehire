@@ -57,6 +57,7 @@ NProgress.configure({ showSpinner: false, trickleSpeed: 200 });
 function RouteProgress() {
     const location = useLocation();
     useEffect(() => {
+        window.scrollTo(0, 0);
         NProgress.start();
         const timer = setTimeout(() => NProgress.done(), 300);
         return () => { clearTimeout(timer); NProgress.done(); };

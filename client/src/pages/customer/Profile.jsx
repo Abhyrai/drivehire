@@ -1,23 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { updateProfile, getCustomerBookings, getInvoices, uploadAvatar, getServerURL } from '../../services/api';
+import { updateProfile, getCustomerBookings, getInvoices, uploadAvatar, getServerURL, getProfile } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiUser, FiMail, FiPhone, FiMapPin, FiCalendar, FiDollarSign, FiShield, FiEdit3, FiCheckCircle } from 'react-icons/fi';
 import AvatarUpload from '../../components/AvatarUpload';
 
 export default function CustomerProfile() {
     const { user, setUser } = useAuth();
-    const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '', city: user?.city || '' });
+    const [form, setForm] = useState({ name: '', phone: '', city: '' });
     const [loading, setLoading] = useState(false);
     const [stats, setStats] = useState({ totalBookings: 0, activeBookings: 0, totalSpent: 0 });
+    const [pendingAvatar, setPendingAvatar] = useState(null); // File waiting to be saved
 
-    const handleAvatarUpload = async (file) => {
-        try {
-            const { data } = await uploadAvatar(file);
-            setUser({ ...user, avatar: data.avatar });
-            toast.success('Profile picture updated! 📸');
-        } catch (err) { toast.error('Failed to upload photo'); }
-    };
+    // Fetch fresh profile data including phone
+    useEffect(() => {
+        getProfile().then(res => {
+            const u = res.data.user;
+            setForm({ name: u.name || '', phone: u.phone || '', city: u.city || '' });
+            setUser(prev => ({ ...prev, ...u }));
+        }).catch(() => {
+            // Fallback to context data
+            setForm({ name: user?.name || '', phone: user?.phone || '', city: user?.city || '' });
+        });
+    }, []);
 
     useEffect(() => {
         Promise.all([getCustomerBookings(), getInvoices()])
@@ -36,8 +41,15 @@ export default function CustomerProfile() {
         e.preventDefault();
         setLoading(true);
         try {
+            // Upload avatar first if one is pending
+            if (pendingAvatar) {
+                const avatarRes = await uploadAvatar(pendingAvatar);
+                setUser(prev => ({ ...prev, avatar: avatarRes.data.avatar }));
+                setPendingAvatar(null);
+            }
+            // Then update profile text fields
             const { data } = await updateProfile(form);
-            setUser({ ...user, ...data.user });
+            setUser(prev => ({ ...prev, ...data.user }));
             toast.success('Profile updated! ✅');
         } catch (err) { toast.error(err.response?.data?.message || 'Error'); }
         finally { setLoading(false); }
@@ -78,13 +90,14 @@ export default function CustomerProfile() {
                             <AvatarUpload
                                 name={user?.name}
                                 currentImage={user?.avatar ? `${getServerURL()}${user.avatar}` : null}
-                                onUpload={handleAvatarUpload}
+                                onFileSelect={(file) => setPendingAvatar(file)}
                                 editable={true}
                                 size={100}
                             />
                         </div>
                         <h3 style={{ marginTop: 'var(--space-sm)' }}>{user?.name}</h3>
                         <span className="badge badge-primary" style={{ marginTop: 4 }}>Customer</span>
+                        {pendingAvatar && <p style={{ fontSize: 'var(--font-xs)', color: 'var(--warning)', marginTop: 6 }}>📸 New photo selected — click Save to apply</p>}
                     </div>
 
                     <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 'var(--space-md)', display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -93,11 +106,11 @@ export default function CustomerProfile() {
                             <span className="verified-badge verified"><FiCheckCircle size={12} /> Verified</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', justifyContent: 'space-between', flexWrap: 'wrap' }}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><FiPhone size={14} /> {user?.phone || 'Not set'}</span>
-                            {user?.phone && <span className="verified-badge verified"><FiCheckCircle size={12} /> Verified</span>}
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><FiPhone size={14} /> {form.phone || user?.phone || 'Not set'}</span>
+                            {(form.phone || user?.phone) && <span className="verified-badge verified"><FiCheckCircle size={12} /> Verified</span>}
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)' }}>
-                            <FiMapPin size={14} /> {user?.city || 'Not set'}
+                            <FiMapPin size={14} /> {form.city || user?.city || 'Not set'}
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: 'var(--font-xs)' }}>
                             <FiCalendar size={14} /> Member since {memberSince}

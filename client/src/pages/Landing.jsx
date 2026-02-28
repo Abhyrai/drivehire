@@ -54,11 +54,13 @@ export default function Landing() {
                         </p>
                         <div className="hero-actions">
                             <button className="btn btn-primary btn-lg" onClick={handleGetStarted}>
-                                Get Started Free →
+                                {user ? 'Go to Dashboard →' : 'Get Started Free →'}
                             </button>
-                            <button className="btn btn-secondary btn-lg" onClick={() => navigate('/register')}>
-                                Become a Driver
-                            </button>
+                            {!user && (
+                                <button className="btn btn-secondary btn-lg" onClick={() => navigate('/register')}>
+                                    Become a Driver
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
