@@ -26,7 +26,7 @@ export default function BookingCalendar() {
         (async () => {
             try {
                 const { data } = await getCustomerBookings();
-                setBookings(data);
+                setBookings(data.bookings || []);
             } catch { }
             setLoading(false);
         })();
@@ -62,8 +62,8 @@ export default function BookingCalendar() {
     const bookingsByDate = useMemo(() => {
         const map = {};
         bookings.forEach(b => {
-            const start = new Date(b.startDate);
-            const end = new Date(b.endDate);
+            const start = new Date(b.startTime);
+            const end = new Date(b.endTime);
             const cur = new Date(start);
             while (cur <= end) {
                 const key = `${cur.getFullYear()}-${cur.getMonth()}-${cur.getDate()}`;
@@ -163,10 +163,10 @@ export default function BookingCalendar() {
                                         <strong style={{ color: 'var(--primary)' }}>{formatINR(b.totalPrice)}</strong>
                                     </div>
                                     <p style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>
-                                        {b.driver?.user?.name || 'Driver'} • {b.vehicleType}
+                                        {b.driverId?.userId?.name || 'Driver'} • {b.vehicleId?.type || b.durationType}
                                     </p>
                                     <p style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>
-                                        {new Date(b.startDate).toLocaleDateString()} → {new Date(b.endDate).toLocaleDateString()}
+                                        {new Date(b.startTime).toLocaleDateString()} → {new Date(b.endTime).toLocaleDateString()}
                                     </p>
                                 </div>
                             ))}
