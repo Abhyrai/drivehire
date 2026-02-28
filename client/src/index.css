@@ -1073,6 +1073,70 @@ textarea.form-input {
   color: white;
 }
 
+/* User Dropdown */
+.user-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 260px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  z-index: 100;
+  overflow: hidden;
+  animation: dropIn 0.2s ease;
+}
+
+@keyframes dropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.user-dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+}
+
+.user-dropdown-divider {
+  height: 1px;
+  background: var(--border-color);
+  margin: 0;
+}
+
+.user-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  font-size: var(--font-sm);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.user-dropdown-item:hover {
+  background: rgba(255, 107, 53, 0.08);
+  color: var(--primary);
+}
+
+.user-dropdown-item.logout {
+  color: var(--danger);
+}
+
+.user-dropdown-item.logout:hover {
+  background: rgba(225, 112, 85, 0.1);
+}
+
 /* ==================== SIDEBAR ==================== */
 .sidebar {
   position: fixed;
@@ -1330,6 +1394,43 @@ textarea.form-input {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-md);
+}
+
+.form-group {
+  width: 100%;
+}
+
+.input-icon-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--text-muted);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-input.has-icon {
+  padding-left: 38px;
+}
+
+.input-toggle {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.input-toggle:hover {
+  color: var(--primary);
 }
 
 .error-message {
@@ -1750,6 +1851,123 @@ textarea.form-input {
   display: block;
 }
 
+/* ==================== BOTTOM NAVIGATION ==================== */
+.bottom-nav {
+  display: none;
+  /* Hidden on desktop */
+}
+
+/* ==================== AVATAR UPLOAD ==================== */
+.avatar-upload {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-circle {
+  border-radius: 50%;
+  background: var(--gradient-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  border: 3px solid var(--border-color);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initials {
+  color: white;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  user-select: none;
+}
+
+.avatar-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.avatar-edit-btn {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: white;
+  border: 2px solid var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 2;
+}
+
+.avatar-edit-btn:hover {
+  background: var(--primary-hover);
+  transform: scale(1.1);
+}
+
+/* ==================== VERIFICATION BADGES ==================== */
+.verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.verified-badge.verified {
+  background: rgba(0, 206, 158, 0.12);
+  color: var(--success);
+}
+
+.verified-badge.pending {
+  background: rgba(253, 203, 110, 0.15);
+  color: var(--warning);
+}
+
+.verified-badge.rejected {
+  background: rgba(225, 112, 85, 0.12);
+  color: var(--danger);
+}
+
+.trust-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 206, 158, 0.1);
+  border: 1px solid rgba(0, 206, 158, 0.25);
+  color: var(--success);
+  font-size: var(--font-xs);
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ==================== STICKY MOBILE ACTIONS ==================== */
+.sticky-actions {
+  display: none;
+}
+
+/* ==================== RESPONSIVE: TABLET & MOBILE ==================== */
 @media (max-width: 768px) {
   :root {
     --sidebar-width: 0;
@@ -1758,6 +1976,7 @@ textarea.form-input {
     --font-3xl: 1.5rem;
   }
 
+  /* ---- Hide sidebar, show bottom nav ---- */
   .sidebar {
     transform: translateX(-100%);
     width: 280px;
@@ -1772,9 +1991,72 @@ textarea.form-input {
   .main-content {
     margin-left: 0;
     padding: var(--space-md);
+    padding-bottom: 80px;
+    /* Space for bottom nav */
   }
 
-  /* Navbar mobile */
+  /* ---- Bottom Nav visible ---- */
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--glass-border);
+    z-index: 1000;
+    padding: 0 var(--space-sm);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  }
+
+  .bottom-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    position: relative;
+    min-height: 44px;
+    min-width: 44px;
+    transition: color var(--transition-fast);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .bottom-nav-item.active {
+    color: var(--primary);
+  }
+
+  .bottom-nav-icon {
+    font-size: 1.25rem;
+    display: flex;
+  }
+
+  .bottom-nav-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1;
+  }
+
+  .bottom-nav-dot {
+    position: absolute;
+    top: 4px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--primary);
+  }
+
+  /* ---- Navbar mobile ---- */
   .navbar {
     padding: 0 var(--space-md);
   }
@@ -1787,7 +2069,7 @@ textarea.form-input {
     display: none;
   }
 
-  /* Page header stack on mobile */
+  /* ---- Page header ---- */
   .page-header {
     flex-direction: column !important;
     align-items: flex-start !important;
@@ -1798,7 +2080,7 @@ textarea.form-input {
     font-size: var(--font-2xl);
   }
 
-  /* Hero */
+  /* ---- Hero ---- */
   .hero-content h1 {
     font-size: var(--font-4xl);
   }
@@ -1807,12 +2089,19 @@ textarea.form-input {
     flex-direction: column;
   }
 
-  /* Forms */
+  /* ---- Forms: single column ---- */
   .form-row {
     grid-template-columns: 1fr;
   }
 
-  /* Grids */
+  .form-input,
+  .form-select {
+    min-height: 48px;
+    font-size: 16px;
+    /* Prevents iOS zoom */
+  }
+
+  /* ---- Grids: single column ---- */
   .content-grid.two-col {
     grid-template-columns: 1fr;
   }
@@ -1821,15 +2110,21 @@ textarea.form-input {
     grid-template-columns: 1fr 1fr;
   }
 
-  /* Filter bar */
+  /* ---- Cards full width ---- */
+  .glass-card {
+    border-radius: var(--radius-md);
+  }
+
+  /* ---- Filter bar ---- */
   .filter-bar {
     flex-direction: column;
   }
 
-  /* Driver card */
+  /* ---- Driver card compact ---- */
   .driver-card {
     flex-direction: column;
     text-align: center;
+    padding: var(--space-md);
   }
 
   .driver-card .driver-actions {
@@ -1841,7 +2136,7 @@ textarea.form-input {
     gap: 0.5rem;
   }
 
-  /* Booking card */
+  /* ---- Booking card ---- */
   .booking-card {
     flex-direction: column;
     align-items: flex-start;
@@ -1852,7 +2147,7 @@ textarea.form-input {
     margin-top: var(--space-sm);
   }
 
-  /* Tables scroll */
+  /* ---- Tables ---- */
   .data-table {
     font-size: var(--font-xs);
     display: block;
@@ -1867,36 +2162,37 @@ textarea.form-input {
     min-width: 80px;
   }
 
-  /* Modals */
+  /* ---- Modals ---- */
   .modal-content {
     width: 95vw !important;
     max-width: none !important;
     max-height: 85vh;
     overflow-y: auto;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
 
-  /* DriverProfile grid */
+  /* ---- Profile grids ---- */
   [style*="gridTemplateColumns: '1fr 1fr'"],
   [style*="grid-template-columns: 1fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
 
-  /* Charts */
+  /* ---- Charts ---- */
   .chart-container {
     overflow-x: auto;
   }
 
-  /* Auth */
+  /* ---- Auth ---- */
   .auth-card {
     max-width: 100%;
   }
 
-  /* Calendar */
+  /* ---- Calendar ---- */
   .calendar-day {
     font-size: var(--font-xs);
   }
 
-  /* Timeline mobile */
+  /* ---- Timeline mobile ---- */
   .timeline-label {
     font-size: 7px;
   }
@@ -1905,6 +2201,38 @@ textarea.form-input {
     width: 18px;
     height: 18px;
     font-size: 8px;
+  }
+
+  /* ---- Sticky actions on mobile ---- */
+  .sticky-actions {
+    display: flex;
+    position: fixed;
+    bottom: 64px;
+    /* Above bottom nav */
+    left: 0;
+    right: 0;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--glass-bg);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--glass-border);
+    z-index: 99;
+    gap: var(--space-sm);
+  }
+
+  .sticky-actions .btn {
+    flex: 1;
+    min-height: 44px;
+  }
+
+  /* ---- Scroll-to-top above bottom nav ---- */
+  .scroll-to-top {
+    bottom: 80px;
+  }
+
+  /* ---- User dropdown mobile ---- */
+  .user-dropdown {
+    right: -10px;
+    width: 240px;
   }
 }
 
@@ -1924,6 +2252,7 @@ textarea.form-input {
 
   .main-content {
     padding: var(--space-sm);
+    padding-bottom: 80px;
   }
 
   .page-header h1 {
@@ -1935,16 +2264,27 @@ textarea.form-input {
     font-size: var(--font-sm);
   }
 
-  /* Hide map on very small screens */
   .features-grid {
     grid-template-columns: 1fr;
   }
 
   .scroll-to-top {
-    bottom: 20px;
-    right: 20px;
+    bottom: 76px;
+    right: 16px;
     width: 38px;
     height: 38px;
+  }
+
+  /* Charts single column */
+  [style*="gridTemplateColumns: '2fr 1fr'"],
+  [style*="grid-template-columns: 2fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Avatar smaller on tiny screens */
+  .avatar-edit-btn {
+    width: 28px;
+    height: 28px;
   }
 }
 

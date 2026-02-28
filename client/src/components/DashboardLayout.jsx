@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import NotificationBell from './NotificationBell';
 import ScrollToTop from './ScrollToTop';
+import BottomNav from './BottomNav';
 import {
     FiHome, FiSearch, FiCalendar, FiTruck, FiFileText, FiUser, FiLogOut, FiMenu, FiX,
     FiBriefcase, FiDollarSign, FiStar, FiUsers, FiCheckCircle, FiSettings, FiCreditCard,
@@ -50,6 +51,7 @@ export default function DashboardLayout({ children }) {
     const navigate = useNavigate();
     const location = useLocation();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [userDropOpen, setUserDropOpen] = useState(false);
 
     const items = navItems[user?.role] || [];
 
@@ -76,14 +78,44 @@ export default function DashboardLayout({ children }) {
                         {theme === 'dark' ? <FiSun /> : <FiMoon />}
                     </button>
                     <NotificationBell />
-                    <div className="user-menu" onClick={handleLogout} title="Logout">
-                        <div className="user-avatar">
-                            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    <div className="user-menu-wrapper" style={{ position: 'relative', marginLeft: 'var(--space-lg)' }}>
+                        <div className="user-menu" onClick={() => setUserDropOpen(!userDropOpen)}>
+                            <div className="user-avatar">
+                                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                            </div>
+                            <span style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>
+                                {user?.name}
+                            </span>
                         </div>
-                        <span style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>
-                            {user?.name}
-                        </span>
-                        <FiLogOut style={{ color: 'var(--text-muted)' }} />
+                        {userDropOpen && (
+                            <>
+                                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99 }}
+                                    onClick={() => setUserDropOpen(false)} />
+                                <div className="user-dropdown">
+                                    <div className="user-dropdown-header">
+                                        <div className="user-avatar" style={{ width: 42, height: 42, fontSize: 'var(--font-lg)' }}>
+                                            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                        </div>
+                                        <div>
+                                            <div style={{ fontWeight: 700 }}>{user?.name}</div>
+                                            <div className="text-sm text-muted">{user?.email}</div>
+                                            <span className="badge badge-primary" style={{ fontSize: '10px', marginTop: 4 }}>{user?.role}</span>
+                                        </div>
+                                    </div>
+                                    <div className="user-dropdown-divider" />
+                                    <div className="user-dropdown-item" onClick={() => { navigate('/settings'); setUserDropOpen(false); }}>
+                                        <FiSettings /> Settings
+                                    </div>
+                                    <div className="user-dropdown-item" onClick={() => { navigate(`/${user?.role}/profile`); setUserDropOpen(false); }}>
+                                        <FiUser /> Profile
+                                    </div>
+                                    <div className="user-dropdown-divider" />
+                                    <div className="user-dropdown-item logout" onClick={handleLogout}>
+                                        <FiLogOut /> Logout
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </nav>
@@ -118,6 +150,7 @@ export default function DashboardLayout({ children }) {
             </main>
 
             <ScrollToTop />
+            <BottomNav />
 
             <style>{`
                 .mobile-menu-btn { display: none; }

@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { updateProfile, getCustomerBookings, getInvoices } from '../../services/api';
 import { toast } from 'react-toastify';
-import { FiUser, FiMail, FiPhone, FiMapPin, FiCalendar, FiDollarSign, FiShield, FiEdit3 } from 'react-icons/fi';
+import { FiUser, FiMail, FiPhone, FiMapPin, FiCalendar, FiDollarSign, FiShield, FiEdit3, FiCheckCircle } from 'react-icons/fi';
+import AvatarUpload from '../../components/AvatarUpload';
 
 export default function CustomerProfile() {
     const { user, setUser } = useAuth();
     const [form, setForm] = useState({ name: user?.name || '', phone: user?.phone || '', city: user?.city || '' });
     const [loading, setLoading] = useState(false);
-    const [editing, setEditing] = useState(false);
     const [stats, setStats] = useState({ totalBookings: 0, activeBookings: 0, totalSpent: 0 });
 
     useEffect(() => {
@@ -31,7 +31,6 @@ export default function CustomerProfile() {
             const { data } = await updateProfile(form);
             setUser({ ...user, ...data.user });
             toast.success('Profile updated! ✅');
-            setEditing(false);
         } catch (err) { toast.error(err.response?.data?.message || 'Error'); }
         finally { setLoading(false); }
     };
@@ -59,33 +58,48 @@ export default function CustomerProfile() {
                 </div>
                 <div className="stat-card">
                     <div className="stat-icon" style={{ background: 'rgba(253, 203, 110, 0.2)', color: 'var(--warning)' }}><FiDollarSign /></div>
-                    <div className="stat-info"><h3>₹{stats.totalSpent.toLocaleString()}</h3><p>Total Spent</p></div>
+                    <div className="stat-info"><h3>₹{stats.totalSpent.toLocaleString('en-IN')}</h3><p>Total Spent</p></div>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-xl)', maxWidth: 800 }}>
+            <div className="content-grid two-col" style={{ maxWidth: 800 }}>
                 {/* Profile Card */}
                 <div className="glass-card">
                     <div style={{ textAlign: 'center', marginBottom: 'var(--space-xl)' }}>
-                        <div className="driver-avatar" style={{ width: 90, height: 90, fontSize: 'var(--font-2xl)', margin: '0 auto', background: 'linear-gradient(135deg, var(--primary), var(--accent))' }}>
-                            {user?.name?.charAt(0)?.toUpperCase()}
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-md)' }}>
+                            <AvatarUpload
+                                name={user?.name}
+                                currentImage={user?.avatar}
+                                editable={false}
+                                size={100}
+                            />
                         </div>
-                        <h3 style={{ marginTop: 'var(--space-md)' }}>{user?.name}</h3>
-                        <p className="text-sm text-muted" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4 }}>
-                            <FiMail size={14} /> {user?.email}
-                        </p>
-                        <span className="badge badge-primary" style={{ marginTop: 8 }}>Customer</span>
+                        <h3 style={{ marginTop: 'var(--space-sm)' }}>{user?.name}</h3>
+                        <span className="badge badge-primary" style={{ marginTop: 4 }}>Customer</span>
                     </div>
 
-                    <div style={{ borderTop: '1px solid var(--border)', paddingTop: 'var(--space-md)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: 'var(--text-secondary)' }}>
-                            <FiPhone size={14} /> <span>{user?.phone || 'Not set'}</span>
+                    <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 'var(--space-md)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><FiMail size={14} /> {user?.email}</span>
+                            <span className="verified-badge verified"><FiCheckCircle size={12} /> Verified</span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12, color: 'var(--text-secondary)' }}>
-                            <FiMapPin size={14} /> <span>{user?.city || 'Not set'}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}><FiPhone size={14} /> {user?.phone || 'Not set'}</span>
+                            {user?.phone && <span className="verified-badge verified"><FiCheckCircle size={12} /> Verified</span>}
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)' }}>
+                            <FiMapPin size={14} /> {user?.city || 'Not set'}
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-muted)', fontSize: 'var(--font-xs)' }}>
                             <FiCalendar size={14} /> Member since {memberSince}
+                        </div>
+                    </div>
+
+                    {/* Account Status */}
+                    <div style={{ marginTop: 'var(--space-lg)', paddingTop: 'var(--space-md)', borderTop: '1px solid var(--border-color)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <span className="text-sm text-muted">Account Status</span>
+                            <span className="trust-label"><FiCheckCircle size={12} /> Active</span>
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { getDriverProfile, updateDriverProfile, uploadDocuments } from '../../services/api';
 import { toast } from 'react-toastify';
-import { FiUploadCloud, FiCheckCircle, FiAlertCircle, FiClock, FiXCircle } from 'react-icons/fi';
+import { FiUploadCloud, FiCheckCircle, FiAlertCircle, FiClock, FiXCircle, FiShield } from 'react-icons/fi';
+import AvatarUpload from '../../components/AvatarUpload';
 
 export default function DriverProfilePage() {
     const { user } = useAuth();
@@ -104,7 +105,18 @@ export default function DriverProfilePage() {
 
     return (
         <div>
-            <div className="page-header"><h1>My Profile 👤</h1><p>Update your driver profile and verify documents</p></div>
+            <div className="page-header">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)', flexWrap: 'wrap' }}>
+                    <AvatarUpload name={driver.userId?.name} editable={false} size={70} />
+                    <div>
+                        <h1 style={{ margin: 0 }}>My Profile 👤</h1>
+                        <p style={{ margin: '4px 0 0' }}>Update your driver profile and verify documents</p>
+                        {driver.documentStatus === 'verified' && driver.isApproved && (
+                            <span className="trust-label" style={{ marginTop: 8 }}><FiShield size={12} /> Verified Driver</span>
+                        )}
+                    </div>
+                </div>
+            </div>
 
             {/* Document Verification Section */}
             <div className="glass-card" style={{ maxWidth: 700, marginBottom: 'var(--space-xl)' }}>
