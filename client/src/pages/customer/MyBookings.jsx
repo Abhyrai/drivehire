@@ -98,12 +98,15 @@ export default function MyBookings() {
                 <p className="text-muted">View and manage your booking history</p>
             </div>
 
-            <div className="tabs">
-                {['all', 'pending', 'confirmed', 'active', 'completed', 'cancelled'].map(t => (
-                    <button key={t} className={`tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
-                ))}
+            <div className="tabs-sticky">
+                <div className="tabs-scroll">
+                    {['all', 'pending', 'confirmed', 'active', 'completed', 'cancelled'].map(t => (
+                        <button key={t} className={`tab-pill ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
+                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                            {t !== 'all' && <span className="tab-count">{bookings.filter(b => t === 'all' || b.status === t).length}</span>}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {loading ? <PageSkeleton /> : (
@@ -117,28 +120,31 @@ export default function MyBookings() {
                         <>
                             {paginatedBookings.map(b => (
                                 <div key={b._id} className="glass-card booking-card">
-                                    <div className={`booking-status-dot ${b.status}`}></div>
-                                    <div className="booking-info">
-                                        <h4>{b.pickupLocation}</h4>
-                                        <p>
-                                            {b.durationType} • {new Date(b.startTime).toLocaleDateString()} {new Date(b.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                            {' → '}
-                                            {new Date(b.endTime).toLocaleDateString()} {new Date(b.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                        </p>
-                                        <p>{b.vehicleId?.make} {b.vehicleId?.model} ({b.vehicleId?.type})</p>
-                                        <p className="text-sm text-muted">{timeAgo(b.createdAt)}</p>
+                                    <div className="booking-card-header">
+                                        <div className={`booking-status-dot ${b.status}`}></div>
+                                        <div className="booking-info" style={{ flex: 1 }}>
+                                            <h4>{b.pickupLocation}</h4>
+                                            <p>
+                                                {b.durationType} • {new Date(b.startTime).toLocaleDateString()} {new Date(b.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {' → '}
+                                                {new Date(b.endTime).toLocaleDateString()} {new Date(b.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                            </p>
+                                            <p>{b.vehicleId?.make} {b.vehicleId?.model} ({b.vehicleId?.type})</p>
+                                            <p className="text-sm text-muted">{timeAgo(b.createdAt)}</p>
+                                        </div>
                                     </div>
-                                    <span className={`badge badge-${statusColor(b.status)}`}>{b.status}</span>
-                                    {b.paymentStatus && (
-                                        <span className={`badge ${b.paymentStatus === 'paid' ? 'badge-success' : b.paymentStatus === 'refunded' ? 'badge-warning' : 'badge-secondary'}`}
-                                            style={{ fontSize: '10px' }}>
-                                            {b.paymentStatus === 'paid' ? '💰 Paid' : b.paymentStatus === 'refunded' ? '↩️ Refunded' : `💳 ${(b.paymentMethod || 'cash').toUpperCase()}`}
-                                        </span>
-                                    )}
-                                    <div className="booking-amount">{formatINR(b.totalPrice)}</div>
+                                    <div className="booking-card-badges">
+                                        <span className={`badge badge-${statusColor(b.status)}`}>{b.status}</span>
+                                        {b.paymentStatus && (
+                                            <span className={`badge ${b.paymentStatus === 'paid' ? 'badge-success' : b.paymentStatus === 'refunded' ? 'badge-warning' : 'badge-secondary'}`}>
+                                                {b.paymentStatus === 'paid' ? '💰 Paid' : b.paymentStatus === 'refunded' ? '↩️ Refunded' : `💳 ${(b.paymentMethod || 'cash').toUpperCase()}`}
+                                            </span>
+                                        )}
+                                        <span className="booking-amount">{formatINR(b.totalPrice)}</span>
+                                    </div>
 
                                     {/* Status Timeline */}
-                                    <div style={{ width: '100%', marginTop: 8 }}>
+                                    <div style={{ width: '100%' }}>
                                         <StatusTimeline status={b.status} />
                                     </div>
 
