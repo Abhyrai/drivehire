@@ -98,34 +98,14 @@ export default function NotificationBell() {
 
             {/* Dropdown */}
             {open && (
-                <div style={{
-                    position: 'absolute', top: '100%', right: 0,
-                    width: 360, maxHeight: 450, overflowY: 'auto',
-                    background: 'var(--bg-secondary)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 'var(--radius-lg)',
-                    boxShadow: '0 16px 48px rgba(0,0,0,0.3)',
-                    zIndex: 999, marginTop: 8
-                }}>
+                <div className="notif-dropdown">
                     {/* Header */}
-                    <div style={{
-                        padding: '12px 16px',
-                        borderBottom: '1px solid var(--border)',
-                        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                    }}>
-                        <strong style={{ fontSize: 'var(--font-base)' }}>
-                            🔔 Notifications {unreadCount > 0 && <span className="badge badge-primary" style={{ marginLeft: 8 }}>{unreadCount}</span>}
+                    <div className="notif-dropdown-header">
+                        <strong>
+                            🔔 Notifications {unreadCount > 0 && <span className="badge badge-primary" style={{ marginLeft: 6 }}>{unreadCount}</span>}
                         </strong>
                         {unreadCount > 0 && (
-                            <button
-                                onClick={handleMarkAll}
-                                disabled={loading}
-                                style={{
-                                    background: 'none', border: 'none', cursor: 'pointer',
-                                    color: 'var(--primary)', fontSize: 'var(--font-sm)',
-                                    display: 'flex', alignItems: 'center', gap: 4
-                                }}
-                            >
+                            <button onClick={handleMarkAll} disabled={loading} className="notif-mark-all">
                                 <FiCheckCircle size={14} /> Mark all read
                             </button>
                         )}
@@ -133,12 +113,9 @@ export default function NotificationBell() {
 
                     {/* Notification List */}
                     {notifications.length === 0 ? (
-                        <div style={{
-                            padding: '40px 16px', textAlign: 'center',
-                            color: 'var(--text-muted)', fontSize: 'var(--font-sm)'
-                        }}>
-                            <div style={{ fontSize: '2rem', marginBottom: 8 }}>🔕</div>
-                            No notifications yet
+                        <div className="notif-empty">
+                            <FiBell size={28} style={{ opacity: 0.4 }} />
+                            <span>You have no notifications yet</span>
                         </div>
                     ) : (
                         notifications.slice(0, 20).map(n => (

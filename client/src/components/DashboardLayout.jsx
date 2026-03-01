@@ -61,31 +61,31 @@ export default function DashboardLayout({ children }) {
         <>
             {/* Navbar */}
             <nav className="navbar">
-                <button className="btn btn-icon mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}
-                    style={{ marginRight: '0.5rem' }}>
-                    {sidebarOpen ? <FiX /> : <FiMenu />}
-                </button>
-                <div className="logo" onClick={() => navigate(user ? `/${user.role === 'customer' ? 'customer' : user.role === 'driver' ? 'driver' : 'admin'}` : '/')} style={{ cursor: 'pointer' }}>
-                    <span>🚗</span> DriveHire
+                <div className="navbar-left">
+                    <button className="btn btn-icon mobile-menu-btn" onClick={() => setSidebarOpen(!sidebarOpen)}>
+                        {sidebarOpen ? <FiX /> : <FiMenu />}
+                    </button>
+                    <div className="logo" onClick={() => navigate(user ? `/${user.role === 'customer' ? 'customer' : user.role === 'driver' ? 'driver' : 'admin'}` : '/')} style={{ cursor: 'pointer' }}>
+                        <span>🚗</span> DriveHire
+                    </div>
                 </div>
-                <div className="nav-links">
+                <div className="navbar-actions">
                     <button className="theme-toggle-btn" onClick={toggleTheme} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
                         {theme === 'dark' ? <FiSun /> : <FiMoon />}
                     </button>
                     <NotificationBell />
-                    <div className="user-menu-wrapper" style={{ position: 'relative', marginLeft: 'var(--space-lg)' }}>
+                    <div className="user-menu-wrapper" style={{ position: 'relative' }}>
                         <div className="user-menu" onClick={() => setUserDropOpen(!userDropOpen)}>
                             <div className="user-avatar">
                                 {user?.name?.charAt(0)?.toUpperCase() || 'U'}
                             </div>
-                            <span style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)' }}>
+                            <span className="user-name-text">
                                 {user?.name}
                             </span>
                         </div>
                         {userDropOpen && (
                             <>
-                                <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99 }}
-                                    onClick={() => setUserDropOpen(false)} />
+                                <div className="dropdown-backdrop" onClick={() => setUserDropOpen(false)} />
                                 <div className="user-dropdown">
                                     <div className="user-dropdown-header">
                                         <div className="user-avatar" style={{ width: 42, height: 42, fontSize: 'var(--font-lg)' }}>
