@@ -5,7 +5,6 @@ import { registerUser } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiUser, FiMail, FiLock, FiEye, FiEyeOff, FiPhone, FiMapPin } from 'react-icons/fi';
 import { validatePhone, getPasswordStrength } from '../../utils/utils';
-import OTPVerification from '../../components/OTPVerification';
 
 export default function Register() {
     const [role, setRole] = useState('customer');
@@ -16,8 +15,6 @@ export default function Register() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showPwd, setShowPwd] = useState(false);
-    const [otpStep, setOtpStep] = useState(false);
-    const [otpEmail, setOtpEmail] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -51,31 +48,14 @@ export default function Register() {
                 payload.languages = form.languages.split(',').map(l => l.trim()).filter(Boolean);
             }
             const { data } = await registerUser(payload);
-            if (data.needsVerification) {
-                setOtpEmail(data.email);
-                setOtpStep(true);
-                toast.info('📧 Check your email for the verification code!');
-            } else if (data.token) {
-                login(data.token, data.user);
-                toast.success('Account created! 🎉');
-                navigate(role === 'driver' ? '/driver' : '/customer');
-            }
+            login(data.token, data.user);
+            toast.success('Account created! 🎉');
+            if (role === 'driver') navigate('/driver');
+            else navigate('/customer');
         } catch (err) {
             setError(err.response?.data?.message || 'Registration failed');
         } finally { setLoading(false); }
     };
-
-    const handleOTPVerified = (data) => {
-        login(data.token, data.user);
-        if (data.user.role === 'admin') navigate('/admin');
-        else if (data.user.role === 'driver') navigate('/driver');
-        else navigate('/customer');
-    };
-
-    // OTP Verification Screen
-    if (otpStep) {
-        return <OTPVerification email={otpEmail} onVerified={handleOTPVerified} />;
-    }
 
     return (
         <div className="auth-page">

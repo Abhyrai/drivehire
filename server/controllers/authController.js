@@ -2,13 +2,10 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const Driver = require('../models/Driver');
-const { sendOTP } = require('../utils/emailService');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
 };
-
-const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // POST /api/auth/register
 exports.register = async (req, res, next) => {
@@ -17,25 +14,12 @@ exports.register = async (req, res, next) => {
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            // If user exists but unverified, resend OTP
-            if (!existingUser.isEmailVerified) {
-                const otp = generateOTP();
-                existingUser.emailOTP = otp;
-                existingUser.emailOTPExpire = Date.now() + 10 * 60 * 1000;
-                await existingUser.save({ validateBeforeSave: false });
-                sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
-                return res.status(200).json({ success: true, needsVerification: true, email, message: 'Verification code sent to your email' });
-            }
             return res.status(400).json({ success: false, message: 'Email already registered' });
         }
 
-        const otp = generateOTP();
         const user = await User.create({
             name, email, password, phone, city,
-            role: role === 'driver' ? 'driver' : 'customer',
-            emailOTP: otp,
-            emailOTPExpire: Date.now() + 10 * 60 * 1000,
-            isEmailVerified: false
+            role: role === 'driver' ? 'driver' : 'customer'
         });
 
         // If driver role, create driver profile stub
@@ -52,68 +36,19 @@ exports.register = async (req, res, next) => {
             });
         }
 
-        // Send OTP email
-        sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
+        const token = generateToken(user._id);
 
         res.status(201).json({
-            success: true,
-            needsVerification: true,
-            email,
-            message: 'Account created! Verification code sent to your email'
-        });
-    } catch (error) {
-        next(error);
-    }
-};
-
-// POST /api/auth/verify-otp
-exports.verifyOTP = async (req, res, next) => {
-    try {
-        const { email, otp } = req.body;
-        if (!email || !otp) return res.status(400).json({ success: false, message: 'Email and OTP are required' });
-
-        const user = await User.findOne({
-            email,
-            emailOTP: otp,
-            emailOTPExpire: { $gt: Date.now() }
-        });
-
-        if (!user) return res.status(400).json({ success: false, message: 'Invalid or expired verification code' });
-
-        user.isEmailVerified = true;
-        user.emailOTP = undefined;
-        user.emailOTPExpire = undefined;
-        await user.save({ validateBeforeSave: false });
-
-        const token = generateToken(user._id);
-        res.json({
             success: true,
             token,
             user: {
                 id: user._id, name: user.name, email: user.email,
-                role: user.role, city: user.city, avatar: user.avatar
+                role: user.role, city: user.city
             }
         });
-    } catch (error) { next(error); }
-};
-
-// POST /api/auth/resend-otp
-exports.resendOTP = async (req, res, next) => {
-    try {
-        const { email } = req.body;
-        const user = await User.findOne({ email });
-        if (!user) return res.status(404).json({ success: false, message: 'No account found' });
-        if (user.isEmailVerified) return res.status(400).json({ success: false, message: 'Email is already verified' });
-
-        const otp = generateOTP();
-        user.emailOTP = otp;
-        user.emailOTPExpire = Date.now() + 10 * 60 * 1000;
-        await user.save({ validateBeforeSave: false });
-
-        sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
-
-        res.json({ success: true, message: 'New verification code sent' });
-    } catch (error) { next(error); }
+    } catch (error) {
+        next(error);
+    }
 };
 
 // POST /api/auth/login
@@ -137,16 +72,6 @@ exports.login = async (req, res, next) => {
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
             return res.status(401).json({ success: false, message: 'Invalid credentials' });
-        }
-
-        // Check email verification
-        if (!user.isEmailVerified) {
-            const otp = generateOTP();
-            user.emailOTP = otp;
-            user.emailOTPExpire = Date.now() + 10 * 60 * 1000;
-            await user.save({ validateBeforeSave: false });
-            sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
-            return res.status(200).json({ success: true, needsVerification: true, email, message: 'Please verify your email. Code sent.' });
         }
 
         const token = generateToken(user._id);
@@ -180,7 +105,7 @@ exports.getMe = async (req, res, next) => {
                 id: user._id, name: user.name, email: user.email,
                 phone: user.phone, role: user.role, city: user.city,
                 avatar: user.avatar, isVerified: user.isVerified,
-                isEmailVerified: user.isEmailVerified, driverProfile
+                driverProfile
             }
         });
     } catch (error) {

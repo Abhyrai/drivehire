@@ -4,15 +4,12 @@ import { useAuth } from '../../context/AuthContext';
 import { loginUser } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiMail, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
-import OTPVerification from '../../components/OTPVerification';
 
 export default function Login() {
     const [form, setForm] = useState({ email: '', password: '' });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [showPwd, setShowPwd] = useState(false);
-    const [otpStep, setOtpStep] = useState(false);
-    const [otpEmail, setOtpEmail] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
 
@@ -24,33 +21,15 @@ export default function Login() {
         setLoading(true);
         try {
             const { data } = await loginUser({ ...form, email: form.email.trim().toLowerCase() });
-            if (data.needsVerification) {
-                setOtpEmail(data.email || form.email.trim().toLowerCase());
-                setOtpStep(true);
-                toast.info('📧 Check your email for the verification code!');
-            } else {
-                login(data.token, data.user);
-                toast.success('Welcome back!');
-                if (data.user.role === 'admin') navigate('/admin');
-                else if (data.user.role === 'driver') navigate('/driver');
-                else navigate('/customer');
-            }
+            login(data.token, data.user);
+            toast.success('Welcome back!');
+            if (data.user.role === 'admin') navigate('/admin');
+            else if (data.user.role === 'driver') navigate('/driver');
+            else navigate('/customer');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
         } finally { setLoading(false); }
     };
-
-    const handleOTPVerified = (data) => {
-        login(data.token, data.user);
-        if (data.user.role === 'admin') navigate('/admin');
-        else if (data.user.role === 'driver') navigate('/driver');
-        else navigate('/customer');
-    };
-
-    // OTP Verification Screen
-    if (otpStep) {
-        return <OTPVerification email={otpEmail} onVerified={handleOTPVerified} />;
-    }
 
     return (
         <div className="auth-page">

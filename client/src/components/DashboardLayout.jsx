@@ -93,7 +93,11 @@ export default function DashboardLayout({ children }) {
                                 <div className="user-dropdown">
                                     <div className="user-dropdown-header">
                                         <div className="user-avatar" style={{ width: 42, height: 42, fontSize: 'var(--font-lg)' }}>
-                                            {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                            {user?.avatar ? (
+                                                <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                            ) : (
+                                                user?.name?.charAt(0)?.toUpperCase() || 'U'
+                                            )}
                                         </div>
                                         <div>
                                             <div style={{ fontWeight: 700 }}>{user?.name}</div>
