@@ -189,6 +189,7 @@ export default function ManageDrivers() {
                                         background: 'var(--bg-primary)', cursor: 'pointer'
                                     }} onClick={() => window.open(imageUrl(docModal.licenseImage), '_blank')}>
                                         <img src={imageUrl(docModal.licenseImage)} alt="License"
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="text-align:center;color:#888;padding:20px;font-size:13px">⚠️ Image unavailable<br/><small>Driver needs to re-upload</small></div>'; }}
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                 ) : (
@@ -209,6 +210,7 @@ export default function ManageDrivers() {
                                         background: 'var(--bg-primary)', cursor: 'pointer'
                                     }} onClick={() => window.open(imageUrl(docModal.aadhaarImage), '_blank')}>
                                         <img src={imageUrl(docModal.aadhaarImage)} alt="Aadhaar"
+                                            onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="text-align:center;color:#888;padding:20px;font-size:13px">⚠️ Image unavailable<br/><small>Driver needs to re-upload</small></div>'; }}
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                 ) : (
@@ -232,6 +234,7 @@ export default function ManageDrivers() {
                                     background: 'var(--bg-primary)', cursor: 'pointer'
                                 }} onClick={() => window.open(imageUrl(docModal.idProofImage), '_blank')}>
                                     <img src={imageUrl(docModal.idProofImage)} alt="ID Proof"
+                                        onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="text-align:center;color:#888;padding:20px;font-size:13px">⚠️ Image unavailable<br/><small>Driver needs to re-upload</small></div>'; }}
                                         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                 </div>
                             </div>

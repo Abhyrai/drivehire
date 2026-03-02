@@ -131,7 +131,8 @@ export default function DriverProfilePage() {
                     {driver.licenseImage && (
                         <div className="doc-card">
                             <div className="doc-card-img">
-                                <img src={imageUrl(driver.licenseImage)} alt="License" />
+                                <img src={imageUrl(driver.licenseImage)} alt="License"
+                                    onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="text-align:center;color:#888;padding:16px;font-size:13px">⚠️ Image lost<br/><small>Please re-upload</small></div>'; }} />
                             </div>
                             <span className="doc-card-label">Driving License</span>
                         </div>
@@ -139,7 +140,8 @@ export default function DriverProfilePage() {
                     {driver.aadhaarImage && (
                         <div className="doc-card">
                             <div className="doc-card-img">
-                                <img src={imageUrl(driver.aadhaarImage)} alt="Aadhaar" />
+                                <img src={imageUrl(driver.aadhaarImage)} alt="Aadhaar"
+                                    onError={(e) => { e.target.style.display = 'none'; e.target.parentNode.innerHTML = '<div style="text-align:center;color:#888;padding:16px;font-size:13px">⚠️ Image lost<br/><small>Please re-upload</small></div>'; }} />
                             </div>
                             <span className="doc-card-label">Aadhaar Card</span>
                         </div>
