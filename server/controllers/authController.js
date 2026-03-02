@@ -23,7 +23,7 @@ exports.register = async (req, res, next) => {
                 existingUser.emailOTP = otp;
                 existingUser.emailOTPExpire = Date.now() + 10 * 60 * 1000;
                 await existingUser.save({ validateBeforeSave: false });
-                try { await sendOTP(email, otp); } catch (e) { console.error('Email send error:', e.message); }
+                sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
                 return res.status(200).json({ success: true, needsVerification: true, email, message: 'Verification code sent to your email' });
             }
             return res.status(400).json({ success: false, message: 'Email already registered' });
@@ -53,7 +53,7 @@ exports.register = async (req, res, next) => {
         }
 
         // Send OTP email
-        try { await sendOTP(email, otp); } catch (e) { console.error('Email send error:', e.message); }
+        sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
 
         res.status(201).json({
             success: true,
@@ -110,7 +110,7 @@ exports.resendOTP = async (req, res, next) => {
         user.emailOTPExpire = Date.now() + 10 * 60 * 1000;
         await user.save({ validateBeforeSave: false });
 
-        try { await sendOTP(email, otp); } catch (e) { console.error('Email send error:', e.message); }
+        sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
 
         res.json({ success: true, message: 'New verification code sent' });
     } catch (error) { next(error); }
@@ -145,7 +145,7 @@ exports.login = async (req, res, next) => {
             user.emailOTP = otp;
             user.emailOTPExpire = Date.now() + 10 * 60 * 1000;
             await user.save({ validateBeforeSave: false });
-            try { await sendOTP(email, otp); } catch (e) { console.error('Email send error:', e.message); }
+            sendOTP(email, otp).catch(e => console.error('Email send error:', e.message));
             return res.status(200).json({ success: true, needsVerification: true, email, message: 'Please verify your email. Code sent.' });
         }
 
