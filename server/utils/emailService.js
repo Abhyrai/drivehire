@@ -1,28 +1,10 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Try port 465 (SSL) first — Render blocks port 587
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT) || 465,
-    secure: parseInt(process.env.SMTP_PORT) === 587 ? false : true,
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    },
-    connectionTimeout: 10000,
-    socketTimeout: 10000
-});
-
-// Verify connection on startup
-transporter.verify().then(() => {
-    console.log('✅ SMTP connection ready');
-}).catch(err => {
-    console.error('❌ SMTP connection error:', err.message);
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendOTP = async (email, otp) => {
-    const mailOptions = {
-        from: `"DriveHire" <${process.env.SMTP_USER}>`,
+    const { error } = await resend.emails.send({
+        from: 'DriveHire <onboarding@resend.dev>',
         to: email,
         subject: 'DriveHire - Your Verification Code: ' + otp,
         text: `Your DriveHire verification code is: ${otp}\n\nThis code expires in 10 minutes. Do not share it with anyone.\n\n- DriveHire Team`,
@@ -36,8 +18,9 @@ const sendOTP = async (email, otp) => {
                 <p style="text-align: center; font-size: 12px; color: #888;">This code expires in <strong>10 minutes</strong>. Do not share it with anyone.</p>
             </div>
         `
-    };
-    await transporter.sendMail(mailOptions);
+    });
+    if (error) throw new Error(error.message);
+    console.log('✅ OTP email sent to', email);
 };
 
 module.exports = { sendOTP };
