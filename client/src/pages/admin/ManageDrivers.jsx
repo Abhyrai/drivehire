@@ -3,6 +3,8 @@ import { getAdminDrivers, approveDriver, rejectDriver, getDriverDocuments, verif
 import { toast } from 'react-toastify';
 import { FiFileText, FiCheckCircle, FiXCircle, FiEye, FiX } from 'react-icons/fi';
 
+// Handle both old local paths (/uploads/...) and new Cloudinary URLs
+const imageUrl = (path) => path?.startsWith('http') ? path : `${getServerURL()}${path}`;
 export default function ManageDrivers() {
     const [drivers, setDrivers] = useState([]);
     const [tab, setTab] = useState('pending');
@@ -185,8 +187,8 @@ export default function ManageDrivers() {
                                         border: '2px solid var(--border)', height: 200,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         background: 'var(--bg-primary)', cursor: 'pointer'
-                                    }} onClick={() => window.open(`${getServerURL()}${docModal.licenseImage}`, '_blank')}>
-                                        <img src={`${getServerURL()}${docModal.licenseImage}`} alt="License"
+                                    }} onClick={() => window.open(imageUrl(docModal.licenseImage), '_blank')}>
+                                        <img src={imageUrl(docModal.licenseImage)} alt="License"
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                 ) : (
@@ -205,8 +207,8 @@ export default function ManageDrivers() {
                                         border: '2px solid var(--border)', height: 200,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         background: 'var(--bg-primary)', cursor: 'pointer'
-                                    }} onClick={() => window.open(`${getServerURL()}${docModal.aadhaarImage}`, '_blank')}>
-                                        <img src={`${getServerURL()}${docModal.aadhaarImage}`} alt="Aadhaar"
+                                    }} onClick={() => window.open(imageUrl(docModal.aadhaarImage), '_blank')}>
+                                        <img src={imageUrl(docModal.aadhaarImage)} alt="Aadhaar"
                                             style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                     </div>
                                 ) : (

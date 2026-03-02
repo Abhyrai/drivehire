@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { getVehicles, addVehicle, updateVehicle, deleteVehicle } from '../../services/api';
 import { toast } from 'react-toastify';
+import AutocompleteInput from '../../components/AutocompleteInput';
+import { getBrandList, getModelList } from '../../data/vehicleData';
 
 const empty = { type: 'car', make: '', model: '', year: 2024, plateNumber: '', transmission: 'manual', fuelType: 'petrol', color: '' };
 
@@ -53,6 +55,9 @@ export default function MyVehicles() {
         } catch (err) { toast.error('Error'); }
     };
 
+    const brandOptions = getBrandList(form.type);
+    const modelOptions = getModelList(form.type, form.make);
+
     return (
         <div>
             <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -72,7 +77,7 @@ export default function MyVehicles() {
                         <div className="form-row">
                             <div className="form-group">
                                 <label className="form-label">Type</label>
-                                <select name="type" className="form-select" value={form.type} onChange={handleChange}>
+                                <select name="type" className="form-select" value={form.type} onChange={(e) => { setForm({ ...form, type: e.target.value, make: '', model: '' }); }}>
                                     <option value="car">Car</option>
                                     <option value="bike">Bike</option>
                                 </select>
@@ -87,12 +92,26 @@ export default function MyVehicles() {
                         </div>
                         <div className="form-row">
                             <div className="form-group">
-                                <label className="form-label">Make</label>
-                                <input name="make" className="form-input" placeholder="e.g. Hyundai" value={form.make} onChange={handleChange} required />
+                                <AutocompleteInput
+                                    label="Brand"
+                                    name="make"
+                                    placeholder="e.g. Hyundai"
+                                    value={form.make}
+                                    options={brandOptions}
+                                    onChange={(val) => setForm({ ...form, make: val, model: '' })}
+                                    required
+                                />
                             </div>
                             <div className="form-group">
-                                <label className="form-label">Model</label>
-                                <input name="model" className="form-input" placeholder="e.g. Creta" value={form.model} onChange={handleChange} required />
+                                <AutocompleteInput
+                                    label="Model"
+                                    name="model"
+                                    placeholder="e.g. Creta"
+                                    value={form.model}
+                                    options={modelOptions}
+                                    onChange={(val) => setForm({ ...form, model: val })}
+                                    required
+                                />
                             </div>
                         </div>
                         <div className="form-row">
@@ -135,9 +154,9 @@ export default function MyVehicles() {
                     </div>
                 ) : (
                     vehicles.map(v => (
-                        <div key={v._id} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <h3>{v.make} {v.model} <span className="badge badge-primary" style={{ marginLeft: '0.5rem' }}>{v.type}</span></h3>
+                        <div key={v._id} className="glass-card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                            <div style={{ minWidth: 0 }}>
+                                <h3 style={{ wordBreak: 'break-word' }}>{v.make} {v.model} <span className="badge badge-primary" style={{ marginLeft: '0.5rem' }}>{v.type}</span></h3>
                                 <p className="text-sm text-muted" style={{ marginTop: '0.25rem' }}>
                                     {v.year} • {v.plateNumber} • {v.transmission} • {v.fuelType} {v.color && `• ${v.color}`}
                                 </p>

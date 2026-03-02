@@ -50,13 +50,13 @@ exports.uploadDocuments = async (req, res, next) => {
         const updates = {};
 
         if (req.files?.licenseImage) {
-            updates.licenseImage = '/uploads/' + req.files.licenseImage[0].filename;
+            updates.licenseImage = req.files.licenseImage[0].path;
         }
         if (req.files?.idProofImage) {
-            updates.idProofImage = '/uploads/' + req.files.idProofImage[0].filename;
+            updates.idProofImage = req.files.idProofImage[0].path;
         }
         if (req.files?.aadhaarImage) {
-            updates.aadhaarImage = '/uploads/' + req.files.aadhaarImage[0].filename;
+            updates.aadhaarImage = req.files.aadhaarImage[0].path;
         }
 
         // Save Aadhaar number if provided

@@ -6,7 +6,7 @@ import { FiUploadCloud, FiCheckCircle, FiAlertCircle, FiClock, FiXCircle, FiShie
 import AvatarUpload from '../../components/AvatarUpload';
 
 export default function DriverProfilePage() {
-    const { user } = useAuth();
+    const { user, refreshUser } = useAuth();
     const [driver, setDriver] = useState(null);
     const [form, setForm] = useState({});
     const [loading, setLoading] = useState(false);
@@ -37,7 +37,7 @@ export default function DriverProfilePage() {
         e.preventDefault();
         setLoading(true);
         try {
-            if (pendingAvatar) { await uploadAvatar(pendingAvatar); setPendingAvatar(null); }
+            if (pendingAvatar) { await uploadAvatar(pendingAvatar); setPendingAvatar(null); await refreshUser(); }
             await updateDriverProfile({
                 ...form, experience: Number(form.experience),
                 vehicleTypes: [form.vehicleTypes], transmissions: [form.transmissions],

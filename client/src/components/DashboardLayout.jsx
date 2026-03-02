@@ -77,7 +77,11 @@ export default function DashboardLayout({ children }) {
                     <div className="user-menu-wrapper" style={{ position: 'relative' }}>
                         <div className="user-menu" onClick={() => setUserDropOpen(!userDropOpen)}>
                             <div className="user-avatar">
-                                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                                {user?.avatar ? (
+                                    <img src={user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                ) : (
+                                    user?.name?.charAt(0)?.toUpperCase() || 'U'
+                                )}
                             </div>
                             <span className="user-name-text">
                                 {user?.name}
