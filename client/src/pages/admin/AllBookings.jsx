@@ -54,12 +54,14 @@ export default function AllBookings() {
                 </button>
             </div>
 
-            <div className="tabs">
-                {['', 'pending', 'confirmed', 'active', 'completed', 'cancelled'].map(t => (
-                    <button key={t} className={`tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-                        {t ? t.charAt(0).toUpperCase() + t.slice(1) : 'All'} {t === '' ? `(${bookings.length})` : ''}
-                    </button>
-                ))}
+            <div className="tabs-sticky">
+                <div className="tabs-scroll">
+                    {['', 'pending', 'confirmed', 'active', 'completed', 'cancelled'].map(t => (
+                        <button key={t} className={`tab-pill ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
+                            {t ? t.charAt(0).toUpperCase() + t.slice(1) : 'All'} {t === '' ? `(${bookings.length})` : ''}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className="glass-card">

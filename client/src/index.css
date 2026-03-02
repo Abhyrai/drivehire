@@ -719,7 +719,7 @@ body {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: 240px;
+  width: 280px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
@@ -747,6 +747,11 @@ body {
   padding: var(--space-md);
   border-bottom: 1px solid var(--border-color);
   align-items: center;
+}
+
+.user-dropdown-header .text-sm {
+  word-break: break-all;
+  font-size: 12px;
 }
 
 .user-dropdown-divider {
@@ -3292,6 +3297,14 @@ textarea.form-input {
   gap: 0;
   border-bottom: 1px solid var(--border-color);
   margin-bottom: var(--space-xl);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tab {
@@ -4251,10 +4264,12 @@ h3 {
     margin: 0 8px;
   }
 
-  /* User dropdown — right-aligned */
+  /* User dropdown — right-aligned, wider for email */
   .user-dropdown {
     right: 0;
-    width: 220px;
+    min-width: 260px;
+    width: auto;
+    max-width: calc(100vw - 32px);
   }
 
   /* Main content takes full width */

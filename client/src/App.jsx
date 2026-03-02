@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -65,6 +66,17 @@ function RouteProgress() {
     return null;
 }
 
+// Auto-redirect logged-in users to their dashboard
+function HomePage() {
+    const { user, loading } = useAuth();
+    if (loading) return <div className="loader"><div className="spinner"></div></div>;
+    if (user) {
+        const dashMap = { customer: '/customer', driver: '/driver', admin: '/admin' };
+        return <Navigate to={dashMap[user.role] || '/customer'} replace />;
+    }
+    return <Landing />;
+}
+
 function App() {
     return (
         <ErrorBoundary>
@@ -73,7 +85,7 @@ function App() {
                     <RouteProgress />
                     <Routes>
                         {/* Public */}
-                        <Route path="/" element={<Landing />} />
+                        <Route path="/" element={<HomePage />} />
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -108,6 +120,7 @@ function App() {
                         <Route path="/admin/pricing" element={<ProtectedRoute roles={['admin']}><DashboardLayout><PricingRules /></DashboardLayout></ProtectedRoute>} />
                         <Route path="/admin/payments" element={<ProtectedRoute roles={['admin']}><DashboardLayout><Payments /></DashboardLayout></ProtectedRoute>} />
                         <Route path="/admin/support" element={<ProtectedRoute roles={['admin']}><DashboardLayout><SupportTickets /></DashboardLayout></ProtectedRoute>} />
+                        <Route path="/admin/profile" element={<ProtectedRoute roles={['admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
 
                         {/* Shared */}
                         <Route path="/settings" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />

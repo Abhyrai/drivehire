@@ -56,12 +56,14 @@ export default function Payments() {
             </div>
 
             {/* Status Filter */}
-            <div className="tabs" style={{ marginBottom: 'var(--space-lg)' }}>
-                {['', 'completed', 'pending', 'refunded', 'failed'].map(s => (
-                    <button key={s} className={`tab ${filter === s ? 'active' : ''}`} onClick={() => setFilter(s)}>
-                        {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
-                    </button>
-                ))}
+            <div className="tabs-sticky" style={{ marginBottom: 'var(--space-lg)' }}>
+                <div className="tabs-scroll">
+                    {['', 'completed', 'pending', 'refunded', 'failed'].map(s => (
+                        <button key={s} className={`tab-pill ${filter === s ? 'active' : ''}`} onClick={() => setFilter(s)}>
+                            {s ? s.charAt(0).toUpperCase() + s.slice(1) : 'All'}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className="glass-card">

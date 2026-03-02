@@ -73,12 +73,14 @@ export default function ManageDrivers() {
         <div>
             <div className="page-header"><h1>Manage Drivers 🚗</h1><p>Approve, reject, and verify driver documents</p></div>
 
-            <div className="tabs">
-                {['pending', 'approved', 'rejected', 'all'].map(t => (
-                    <button key={t} className={`tab ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
-                        {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
-                ))}
+            <div className="tabs-sticky">
+                <div className="tabs-scroll">
+                    {['pending', 'approved', 'rejected', 'all'].map(t => (
+                        <button key={t} className={`tab-pill ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
+                            {t.charAt(0).toUpperCase() + t.slice(1)}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             <div className="drivers-grid">
@@ -86,25 +88,23 @@ export default function ManageDrivers() {
                     <div className="glass-card empty-state"><div className="empty-icon">🚗</div><h3>No {tab} drivers</h3></div>
                 ) : (
                     drivers.map(d => (
-                        <div key={d._id} className="glass-card" style={{ padding: 'var(--space-lg)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-md)' }}>
-                                <div style={{ display: 'flex', gap: 'var(--space-md)', alignItems: 'center' }}>
-                                    <div className="driver-avatar" style={{ width: 50, height: 50 }}>
-                                        {d.userId?.name?.charAt(0) || 'D'}
-                                    </div>
-                                    <div>
-                                        <h4>{d.userId?.name} {d.userId?.isBlocked && <span className="badge badge-danger">Blocked</span>}</h4>
-                                        <p className="text-sm text-muted">{d.userId?.email} • {d.userId?.phone}</p>
-                                    </div>
+                        <div key={d._id} className="glass-card" style={{ padding: 'var(--space-md)' }}>
+                            <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', marginBottom: 'var(--space-sm)', flexWrap: 'wrap' }}>
+                                <div className="driver-avatar" style={{ width: 40, height: 40, flexShrink: 0 }}>
+                                    {d.userId?.name?.charAt(0) || 'D'}
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', alignItems: 'flex-end' }}>
-                                    <span className={`badge ${d.isApproved === 'approved' ? 'badge-success' : d.isApproved === 'rejected' ? 'badge-danger' : 'badge-warning'}`}>
-                                        {d.isApproved}
-                                    </span>
-                                    {docStatusBadge(d.documentStatus)}
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                    <h4 style={{ margin: 0, fontSize: 'var(--font-sm)' }}>{d.userId?.name} {d.userId?.isBlocked && <span className="badge badge-danger" style={{ fontSize: '9px' }}>Blocked</span>}</h4>
+                                    <p className="text-sm text-muted" style={{ margin: 0, wordBreak: 'break-all', fontSize: '11px' }}>{d.userId?.email} • {d.userId?.phone}</p>
                                 </div>
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--space-sm)', fontSize: 'var(--font-sm)', color: 'var(--text-secondary)', marginBottom: 'var(--space-md)' }}>
+                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginBottom: 'var(--space-sm)' }}>
+                                <span className={`badge ${d.isApproved === 'approved' ? 'badge-success' : d.isApproved === 'rejected' ? 'badge-danger' : 'badge-warning'}`} style={{ fontSize: '10px' }}>
+                                    {d.isApproved}
+                                </span>
+                                {docStatusBadge(d.documentStatus)}
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: 'var(--space-sm)' }}>
                                 <span>📍 {d.city}</span>
                                 <span>🪪 {d.licenseNumber}</span>
                                 <span>📅 {d.experience} yrs exp</span>
@@ -155,10 +155,11 @@ export default function ManageDrivers() {
 
                         {/* Driver Info */}
                         <div style={{
-                            display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-sm)',
+                            display: 'grid', gridTemplateColumns: '1fr',
+                            gap: 'var(--space-xs)',
                             background: 'var(--bg-secondary)', padding: 'var(--space-md)',
                             borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-lg)',
-                            fontSize: 'var(--font-sm)'
+                            fontSize: 'var(--font-sm)', wordBreak: 'break-all'
                         }}>
                             <div><strong>Email:</strong> {docModal.email}</div>
                             <div><strong>Phone:</strong> {docModal.phone}</div>
@@ -175,7 +176,7 @@ export default function ManageDrivers() {
                         </div>
 
                         {/* Document Images */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-lg)', marginBottom: 'var(--space-lg)' }}>
+                        <div className="doc-cards-row" style={{ marginBottom: 'var(--space-lg)' }}>
                             <div>
                                 <h4 style={{ marginBottom: 'var(--space-sm)', fontSize: 'var(--font-sm)' }}>🪪 Driving License</h4>
                                 {docModal.licenseImage ? (
