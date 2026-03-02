@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import { FiUser, FiMail, FiPhone, FiMapPin, FiCalendar, FiDollarSign, FiShield, FiEdit3, FiCheckCircle } from 'react-icons/fi';
 import AvatarUpload from '../../components/AvatarUpload';
 
+// Handle both old local paths (/uploads/...) and Cloudinary full URLs
+const imageUrl = (path) => !path ? null : path.startsWith('http') ? path : `${getServerURL()}${path}`;
+
 export default function CustomerProfile() {
     const { user, setUser } = useAuth();
     const [form, setForm] = useState({ name: '', phone: '', city: '' });
@@ -89,7 +92,7 @@ export default function CustomerProfile() {
                         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-md)' }}>
                             <AvatarUpload
                                 name={user?.name}
-                                currentImage={user?.avatar ? `${getServerURL()}${user.avatar}` : null}
+                                currentImage={imageUrl(user?.avatar)}
                                 onFileSelect={(file) => setPendingAvatar(file)}
                                 editable={true}
                                 size={100}

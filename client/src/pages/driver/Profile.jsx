@@ -5,6 +5,9 @@ import { toast } from 'react-toastify';
 import { FiUploadCloud, FiCheckCircle, FiAlertCircle, FiClock, FiXCircle, FiShield, FiUser, FiPhone, FiMapPin, FiMail, FiBriefcase } from 'react-icons/fi';
 import AvatarUpload from '../../components/AvatarUpload';
 
+// Handle both old local paths (/uploads/...) and Cloudinary full URLs
+const imageUrl = (path) => !path ? null : path.startsWith('http') ? path : `${getServerURL()}${path}`;
+
 export default function DriverProfilePage() {
     const { user, refreshUser } = useAuth();
     const [driver, setDriver] = useState(null);
@@ -93,7 +96,7 @@ export default function DriverProfilePage() {
             <div className="profile-hero">
                 <AvatarUpload
                     name={driver.userId?.name}
-                    currentImage={driver.userId?.avatar ? `${getServerURL()}${driver.userId.avatar}` : null}
+                    currentImage={imageUrl(driver.userId?.avatar)}
                     onFileSelect={(file) => setPendingAvatar(file)}
                     editable={true}
                     size={100}
@@ -128,7 +131,7 @@ export default function DriverProfilePage() {
                     {driver.licenseImage && (
                         <div className="doc-card">
                             <div className="doc-card-img">
-                                <img src={`${getServerURL()}${driver.licenseImage}`} alt="License" />
+                                <img src={imageUrl(driver.licenseImage)} alt="License" />
                             </div>
                             <span className="doc-card-label">Driving License</span>
                         </div>
@@ -136,7 +139,7 @@ export default function DriverProfilePage() {
                     {driver.aadhaarImage && (
                         <div className="doc-card">
                             <div className="doc-card-img">
-                                <img src={`${getServerURL()}${driver.aadhaarImage}`} alt="Aadhaar" />
+                                <img src={imageUrl(driver.aadhaarImage)} alt="Aadhaar" />
                             </div>
                             <span className="doc-card-label">Aadhaar Card</span>
                         </div>

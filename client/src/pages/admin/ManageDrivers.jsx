@@ -230,8 +230,8 @@ export default function ManageDrivers() {
                                     border: '2px solid var(--border)', height: 180, maxWidth: 300,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     background: 'var(--bg-primary)', cursor: 'pointer'
-                                }} onClick={() => window.open(`${getServerURL()}${docModal.idProofImage}`, '_blank')}>
-                                    <img src={`${getServerURL()}${docModal.idProofImage}`} alt="ID Proof"
+                                }} onClick={() => window.open(imageUrl(docModal.idProofImage), '_blank')}>
+                                    <img src={imageUrl(docModal.idProofImage)} alt="ID Proof"
                                         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                                 </div>
                             </div>
