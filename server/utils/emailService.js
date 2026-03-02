@@ -1,13 +1,16 @@
 const nodemailer = require('nodemailer');
 
+// Try port 465 (SSL) first — Render blocks port 587
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(process.env.SMTP_PORT) || 587,
-    secure: false,
+    port: parseInt(process.env.SMTP_PORT) || 465,
+    secure: parseInt(process.env.SMTP_PORT) === 587 ? false : true,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS
-    }
+    },
+    connectionTimeout: 10000,
+    socketTimeout: 10000
 });
 
 // Verify connection on startup
@@ -22,9 +25,7 @@ const sendOTP = async (email, otp) => {
         from: `"DriveHire" <${process.env.SMTP_USER}>`,
         to: email,
         subject: 'DriveHire - Your Verification Code: ' + otp,
-        // Plain text version (important for deliverability)
         text: `Your DriveHire verification code is: ${otp}\n\nThis code expires in 10 minutes. Do not share it with anyone.\n\n- DriveHire Team`,
-        // HTML version
         html: `
             <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; padding: 32px; background: #1a1a2e; border-radius: 12px; color: #fff;">
                 <h2 style="text-align: center; color: #ff6b35;">DriveHire</h2>
