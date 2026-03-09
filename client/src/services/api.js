@@ -118,6 +118,7 @@ export const markAllNotificationsRead = () => API.put('/notifications/read-all')
 
 // Auth
 export const changePassword = (data) => API.put('/auth/change-password', data);
+export const deleteAccount = (data) => API.delete('/auth/delete-account', { data });
 
 // Maintenance Mode (admin)
 export const getMaintenanceStatus = () => API.get('/admin/maintenance');

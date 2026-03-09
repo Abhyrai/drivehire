@@ -103,7 +103,7 @@ export default function MyBookings() {
                     {['all', 'pending', 'confirmed', 'active', 'completed', 'cancelled'].map(t => (
                         <button key={t} className={`tab-pill ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
                             {t.charAt(0).toUpperCase() + t.slice(1)}
-                            {t !== 'all' && <span className="tab-count">{bookings.filter(b => t === 'all' || b.status === t).length}</span>}
+                            {tab === t && <span className="tab-count">{bookings.length}</span>}
                         </button>
                     ))}
                 </div>

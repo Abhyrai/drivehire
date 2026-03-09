@@ -1,10 +1,12 @@
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { FiShield, FiClock, FiStar, FiMapPin, FiDollarSign, FiUsers } from 'react-icons/fi';
+import { useState } from 'react';
+import { FiShield, FiClock, FiStar, FiMapPin, FiDollarSign, FiUsers, FiMenu, FiX } from 'react-icons/fi';
 
 export default function Landing() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [menuOpen, setMenuOpen] = useState(false);
 
     const handleGetStarted = () => {
         if (user) {
@@ -23,17 +25,20 @@ export default function Landing() {
                 <div className="logo">
                     <span>🚗</span> DriveHire
                 </div>
-                <div className="nav-links">
+                <button className="nav-hamburger" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
+                    {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+                </button>
+                <div className={`nav-links ${menuOpen ? 'nav-open' : ''}`}>
                     {user ? (
                         <>
                             <a href="#" onClick={handleGetStarted}>Dashboard</a>
                         </>
                     ) : (
                         <>
-                            <a href="#features">Features</a>
-                            <a href="#how-it-works">How It Works</a>
-                            <a style={{ cursor: 'pointer' }} onClick={() => navigate('/about')}>About</a>
-                            <a style={{ cursor: 'pointer' }} onClick={() => navigate('/faq')}>FAQ</a>
+                            <a href="#features" onClick={() => setMenuOpen(false)}>Features</a>
+                            <a href="#how-it-works" onClick={() => setMenuOpen(false)}>How It Works</a>
+                            <a style={{ cursor: 'pointer' }} onClick={() => { navigate('/about'); setMenuOpen(false); }}>About</a>
+                            <a style={{ cursor: 'pointer' }} onClick={() => { navigate('/faq'); setMenuOpen(false); }}>FAQ</a>
                             <button className="btn btn-primary btn-sm" onClick={() => navigate('/login')}>Sign In</button>
                         </>
                     )}
@@ -127,7 +132,14 @@ export default function Landing() {
                 color: 'var(--text-muted)',
                 fontSize: 'var(--font-sm)'
             }}>
-                <p>© 2025 DriveHire — On-Demand Driver Hiring Platform. Built for BSc CS Final Year Project.</p>
+                <div style={{ marginBottom: 8, display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
+                    <a style={{ cursor: 'pointer', color: 'var(--text-secondary)' }} onClick={() => navigate('/terms')}>Terms & Conditions</a>
+                    <a style={{ cursor: 'pointer', color: 'var(--text-secondary)' }} onClick={() => navigate('/privacy')}>Privacy Policy</a>
+                    <a style={{ cursor: 'pointer', color: 'var(--text-secondary)' }} onClick={() => navigate('/about')}>About Us</a>
+                    <a style={{ cursor: 'pointer', color: 'var(--text-secondary)' }} onClick={() => navigate('/faq')}>FAQ</a>
+                </div>
+                <p>© 2026 DriveHire — On-Demand Driver Hiring Platform. Built for BSc CS Final Year Project.</p>
+                <p style={{ marginTop: 4, fontSize: 'var(--font-xs)' }}>📧 support@drivehire.in</p>
             </footer>
         </div>
     );

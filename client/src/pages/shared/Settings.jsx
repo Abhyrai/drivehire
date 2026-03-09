@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { changePassword } from '../../services/api';
+import { changePassword, deleteAccount } from '../../services/api';
 import { toast } from 'react-toastify';
 import { FiSettings, FiLock, FiSun, FiMoon, FiBell, FiShield, FiEye, FiEyeOff, FiTrash2 } from 'react-icons/fi';
 import { getPasswordStrength } from '../../utils/utils';
@@ -14,6 +14,11 @@ export default function Settings() {
     const [pwdForm, setPwdForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
     const [showPwd, setShowPwd] = useState(false);
     const [pwdLoading, setPwdLoading] = useState(false);
+
+    // Delete account
+    const [deleteModal, setDeleteModal] = useState(false);
+    const [deletePassword, setDeletePassword] = useState('');
+    const [deleting, setDeleting] = useState(false);
 
     // Notification prefs (UI only)
     const [notifPrefs, setNotifPrefs] = useState({
@@ -49,10 +54,17 @@ export default function Settings() {
         } finally { setPwdLoading(false); }
     };
 
-    const handleDeleteAccount = () => {
-        if (window.confirm('Are you sure you want to delete your account? This cannot be undone.')) {
-            toast.info('Contact support@drivehire.in to delete your account');
-        }
+    const handleDeleteAccount = async () => {
+        if (!deletePassword) return toast.error('Enter your password to confirm');
+        setDeleting(true);
+        try {
+            await deleteAccount({ password: deletePassword });
+            toast.success('Account deleted. Goodbye! 👋');
+            setDeleteModal(false);
+            logout();
+        } catch (err) {
+            toast.error(err.response?.data?.message || 'Failed to delete account');
+        } finally { setDeleting(false); }
     };
 
     const SettingSection = ({ icon, title, children }) => (
@@ -179,7 +191,7 @@ export default function Settings() {
                         </div>
                     </div>
                     <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: 'var(--space-md)', marginTop: 'var(--space-sm)' }}>
-                        <button className="btn btn-danger btn-sm" onClick={handleDeleteAccount}
+                        <button className="btn btn-danger btn-sm" onClick={() => { setDeleteModal(true); setDeletePassword(''); }}
                             style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                             <FiTrash2 /> Delete Account
                         </button>
@@ -187,6 +199,32 @@ export default function Settings() {
                     </div>
                 </SettingSection>
             </div>
+
+            {/* Delete Account Modal */}
+            {deleteModal && (
+                <div className="modal-overlay" onClick={() => setDeleteModal(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 400 }}>
+                        <div className="modal-header">
+                            <h2>⚠️ Delete Account</h2>
+                            <button className="modal-close" onClick={() => setDeleteModal(false)}>×</button>
+                        </div>
+                        <div className="error-message" style={{ marginBottom: 16, fontSize: 'var(--font-sm)' }}>
+                            This action is <strong>irreversible</strong>. All your data including bookings, vehicles, and profile will be permanently deleted.
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label">Enter your password to confirm</label>
+                            <input type="password" className="form-input" placeholder="Your current password"
+                                value={deletePassword} onChange={e => setDeletePassword(e.target.value)} />
+                        </div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                            <button className="btn btn-danger" onClick={handleDeleteAccount} disabled={deleting} style={{ flex: 1 }}>
+                                {deleting ? 'Deleting...' : '🗑️ Permanently Delete'}
+                            </button>
+                            <button className="btn btn-secondary" onClick={() => setDeleteModal(false)} style={{ flex: 1 }}>Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -46,7 +46,8 @@ export default function FAQ() {
 
                 <div style={{ textAlign: 'center', marginTop: 48 }}>
                     <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>Still have questions?</p>
-                    <Link to="/login" className="btn btn-primary">Contact Support</Link>
+                    <p style={{ color: 'var(--text-secondary)', marginBottom: 16 }}>📧 support@drivehire.in &nbsp;|&nbsp; 📞 +91-9876543210</p>
+                    <Link to="/register" className="btn btn-primary">Create Account to Get Help</Link>
                 </div>
             </div>
         </div>

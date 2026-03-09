@@ -1,8 +1,40 @@
 import { useState, useEffect } from 'react';
 import { getInvoices } from '../../services/api';
-import { FiDownload, FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiDownload, FiChevronDown, FiChevronUp, FiFileText } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 import { formatINR, timeAgo } from '../../utils/utils';
+
+const downloadInvoicePDF = (payment) => {
+    const b = payment.bookingId || {};
+    const html = `<!DOCTYPE html><html><head><title>Invoice - ${payment.transactionId}</title>
+    <style>body{font-family:Arial,sans-serif;max-width:700px;margin:40px auto;padding:20px;color:#333}
+    h1{color:#6c5ce7;margin-bottom:4px}h2{margin:24px 0 12px;border-bottom:2px solid #6c5ce7;padding-bottom:4px}
+    table{width:100%;border-collapse:collapse;margin:12px 0}th,td{padding:8px 12px;text-align:left;border-bottom:1px solid #eee}
+    th{background:#f8f9fa;font-weight:700}.total{font-size:1.4em;color:#6c5ce7;font-weight:800}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}
+    .badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700}
+    .paid{background:#d4edda;color:#155724}.pending{background:#fff3cd;color:#856404}
+    @media print{body{margin:0}}</style></head><body>
+    <div class="header"><div><h1>🚗 DriveHire</h1><p style="color:#666;margin:4px 0">Invoice</p></div>
+    <div style="text-align:right"><strong>Invoice #</strong><br>${payment.transactionId}<br>
+    <strong>Date:</strong> ${new Date(payment.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</div></div>
+    <h2>Payment Details</h2>
+    <table><tr><th>Amount</th><td class="total">${formatINR(payment.amount)}</td></tr>
+    <tr><th>Method</th><td>${(payment.method || 'Cash').toUpperCase()}</td></tr>
+    <tr><th>Status</th><td><span class="badge ${payment.status === 'completed' ? 'paid' : 'pending'}">${payment.status}</span></td></tr>
+    ${payment.refundAmount > 0 ? `<tr><th>Refund</th><td>${formatINR(payment.refundAmount)}</td></tr>` : ''}</table>
+    ${b.startTime ? `<h2>Booking Details</h2><table>
+    <tr><th>Period</th><td>${new Date(b.startTime).toLocaleDateString('en-IN')} → ${new Date(b.endTime).toLocaleDateString('en-IN')}</td></tr>
+    <tr><th>Duration</th><td>${b.durationType || 'Monthly'}</td></tr>
+    <tr><th>Booking Total</th><td>${formatINR(b.totalPrice)}</td></tr>
+    <tr><th>Status</th><td>${b.status}</td></tr></table>` : ''}
+    <div style="margin-top:40px;text-align:center;color:#999;font-size:12px;border-top:1px solid #eee;padding-top:16px">
+    <p>DriveHire — On-Demand Driver Hiring Platform</p><p>support@drivehire.in | +91-9876543210</p></div>
+    <script>window.print();</script></body></html>`;
+    const win = window.open('', '_blank');
+    win.document.write(html);
+    win.document.close();
+};
 
 export default function Invoices() {
     const [payments, setPayments] = useState([]);
@@ -84,6 +116,10 @@ export default function Invoices() {
                                                     <div><strong>Booking Status</strong><br /><span className={`badge badge-${p.bookingId.status === 'completed' ? 'success' : 'primary'}`}>{p.bookingId.status}</span></div>
                                                     {p.refundAmount > 0 && <div><strong>Refund Amount</strong><br />{formatINR(p.refundAmount)}</div>}
                                                 </div>
+                                                <button className="btn btn-primary btn-sm" style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 6 }}
+                                                    onClick={(e) => { e.stopPropagation(); downloadInvoicePDF(p); }}>
+                                                    <FiFileText /> Download Invoice PDF
+                                                </button>
                                             </td>
                                         </tr>
                                     )}

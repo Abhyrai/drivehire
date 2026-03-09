@@ -2623,6 +2623,19 @@ textarea.form-input {
   margin-left: auto;
 }
 
+.nav-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: var(--space-xs);
+  margin-left: auto;
+  z-index: 101;
+}
+
 .navbar .nav-links a,
 .navbar .nav-links button {
   color: var(--text-secondary);
@@ -4457,21 +4470,44 @@ h3 {
     width: 100%;
   }
 
-  /* Navbar compact */
+  /* Navbar compact + hamburger */
   .navbar {
     padding: 0 var(--space-md);
+    flex-wrap: wrap;
+  }
+
+  .nav-hamburger {
+    display: flex !important;
+  }
+
+  .navbar .nav-links {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--space-md) 0;
+    gap: var(--space-sm);
+    background: rgba(10, 14, 23, 0.95);
+    border-top: 1px solid var(--border-color);
+  }
+
+  .navbar .nav-links.nav-open {
+    display: flex;
   }
 
   .navbar .nav-links a {
-    display: none;
+    display: block;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+
+  .navbar .nav-links a:hover {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .navbar .nav-links .btn {
-    display: inline-flex;
-  }
-
-  .navbar .nav-links .theme-toggle-btn {
-    display: flex;
+    width: 100%;
+    margin-top: var(--space-sm);
   }
 
   /* Landing features grid */

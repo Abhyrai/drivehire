@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import { AuthProvider } from './context/AuthContext';
@@ -20,6 +20,8 @@ import ForgotPassword from './pages/auth/ForgotPassword';
 import NotFound from './pages/NotFound';
 import About from './pages/About';
 import FAQ from './pages/FAQ';
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
 
 // Customer
 import CustomerDashboard from './pages/customer/Dashboard';
@@ -128,6 +130,8 @@ function AppContent() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/faq" element={<FAQ />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
 
                 {/* Customer Routes */}
                 <Route path="/customer" element={<ProtectedRoute roles={['customer']}><DashboardLayout><CustomerDashboard /></DashboardLayout></ProtectedRoute>} />
