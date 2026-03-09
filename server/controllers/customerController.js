@@ -338,7 +338,7 @@ exports.toggleFavorite = async (req, res, next) => {
 exports.getFavorites = async (req, res, next) => {
     try {
         const favorites = await Favorite.find({ user: req.user._id })
-            .populate({ path: 'driver', populate: { path: 'user', select: 'name email phone' } });
+            .populate({ path: 'driver', populate: { path: 'user', select: 'name email phone avatar' } });
         res.json(favorites);
     } catch (error) { next(error); }
 };

@@ -29,7 +29,18 @@ export default function ManageUsers() {
                         <tbody>
                             {users.map(u => (
                                 <tr key={u._id}>
-                                    <td style={{ fontWeight: 600 }}>{u.name}</td>
+                                    <td>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <div className="driver-avatar" style={{ width: 34, height: 34, fontSize: '13px', flexShrink: 0 }}>
+                                                {u.avatar ? (
+                                                    <img src={u.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                                ) : (
+                                                    u.name?.charAt(0)?.toUpperCase() || 'U'
+                                                )}
+                                            </div>
+                                            <span style={{ fontWeight: 600 }}>{u.name}</span>
+                                        </div>
+                                    </td>
                                     <td>{u.email}</td>
                                     <td>{u.phone}</td>
                                     <td><span className="badge badge-primary">{u.role}</span></td>

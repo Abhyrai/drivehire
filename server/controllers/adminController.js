@@ -109,7 +109,7 @@ exports.rejectDriver = async (req, res, next) => {
 exports.getDriverDocuments = async (req, res, next) => {
     try {
         const driver = await Driver.findById(req.params.id)
-            .populate('userId', 'name email phone');
+            .populate('userId', 'name email phone avatar');
         if (!driver) return res.status(404).json({ success: false, message: 'Driver not found' });
 
         res.json({

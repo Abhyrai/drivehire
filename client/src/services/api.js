@@ -23,9 +23,13 @@ API.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 503 && error.response?.data?.maintenance) {
-            // Store maintenance flag for UI to pick up
+            // Trigger the maintenance screen via global setter
             window.__DRIVEHIRE_MAINTENANCE__ = true;
             window.__DRIVEHIRE_MAINTENANCE_MSG__ = error.response.data.message;
+            // Also trigger React state update if available
+            if (window.__setMaintenanceGlobal) {
+                window.__setMaintenanceGlobal(error.response.data.message);
+            }
         }
         return Promise.reject(error);
     }

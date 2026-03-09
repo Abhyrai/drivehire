@@ -60,7 +60,11 @@ export default function DriverReviews() {
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-sm)' }}>
                                 <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
                                     <div className="driver-avatar" style={{ width: 36, height: 36, fontSize: 'var(--font-sm)' }}>
-                                        {r.customerId?.name?.charAt(0) || 'C'}
+                                        {r.customerId?.avatar ? (
+                                            <img src={r.customerId.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                        ) : (
+                                            r.customerId?.name?.charAt(0) || 'C'
+                                        )}
                                     </div>
                                     <div>
                                         <strong>{r.customerId?.name || 'Customer'}</strong>

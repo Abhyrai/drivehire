@@ -10,6 +10,7 @@ import 'nprogress/nprogress.css';
 import ProtectedRoute from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 import ErrorBoundary from './components/ErrorBoundary';
+import MaintenanceScreen from './components/MaintenanceScreen';
 
 // Pages
 import Landing from './pages/Landing';
@@ -77,59 +78,103 @@ function HomePage() {
     return <Landing />;
 }
 
+// Global maintenance state (set by API interceptor)
+let setMaintenanceGlobal = null;
+
+function useMaintenanceCheck() {
+    const [maintenance, setMaintenance] = useState({ active: false, message: '' });
+    const { user, loading } = useAuth();
+
+    useEffect(() => {
+        setMaintenanceGlobal = (msg) => setMaintenance({ active: true, message: msg });
+        window.__setMaintenanceGlobal = setMaintenanceGlobal;
+
+        // Check maintenance on load via public endpoint
+        const apiBase = import.meta.env.VITE_API_URL || 'https://drivehire-api.onrender.com/api';
+        fetch(apiBase.replace(/\/api$/, '') + '/api/maintenance-status')
+            .then(r => r.json())
+            .then(data => {
+                if (data.enabled) setMaintenance({ active: true, message: data.message });
+            })
+            .catch(() => { });
+
+        return () => { setMaintenanceGlobal = null; };
+    }, []);
+
+    // Don't block while auth is loading
+    if (loading) return null;
+    // Admin users bypass maintenance screen
+    if (user?.role === 'admin') return null;
+    if (maintenance.active) return maintenance;
+    return null;
+}
+
+// Inner content that has access to AuthProvider context
+function AppContent() {
+    const maintenanceState = useMaintenanceCheck();
+
+    if (maintenanceState) {
+        return <MaintenanceScreen message={maintenanceState.message} />;
+    }
+
+    return (
+        <Router>
+            <RouteProgress />
+            <Routes>
+                {/* Public */}
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/faq" element={<FAQ />} />
+
+                {/* Customer Routes */}
+                <Route path="/customer" element={<ProtectedRoute roles={['customer']}><DashboardLayout><CustomerDashboard /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/search" element={<ProtectedRoute roles={['customer']}><DashboardLayout><SearchDrivers /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/driver/:id" element={<ProtectedRoute roles={['customer']}><DashboardLayout><DriverProfile /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/bookings" element={<ProtectedRoute roles={['customer']}><DashboardLayout><MyBookings /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/calendar" element={<ProtectedRoute roles={['customer']}><DashboardLayout><BookingCalendar /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/favorites" element={<ProtectedRoute roles={['customer']}><DashboardLayout><Favorites /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/vehicles" element={<ProtectedRoute roles={['customer']}><DashboardLayout><MyVehicles /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/invoices" element={<ProtectedRoute roles={['customer']}><DashboardLayout><Invoices /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/profile" element={<ProtectedRoute roles={['customer']}><DashboardLayout><CustomerProfile /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/customer/support" element={<ProtectedRoute roles={['customer']}><DashboardLayout><HelpSupport /></DashboardLayout></ProtectedRoute>} />
+
+                {/* Driver Routes */}
+                <Route path="/driver" element={<ProtectedRoute roles={['driver']}><DashboardLayout><DriverDashboard /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/driver/jobs" element={<ProtectedRoute roles={['driver']}><DashboardLayout><JobRequests /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/driver/earnings" element={<ProtectedRoute roles={['driver']}><DashboardLayout><Earnings /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/driver/reviews" element={<ProtectedRoute roles={['driver']}><DashboardLayout><DriverReviews /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/driver/profile" element={<ProtectedRoute roles={['driver']}><DashboardLayout><DriverProfilePage /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/driver/support" element={<ProtectedRoute roles={['driver']}><DashboardLayout><HelpSupport /></DashboardLayout></ProtectedRoute>} />
+
+                {/* Admin Routes */}
+                <Route path="/admin" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/drivers" element={<ProtectedRoute roles={['admin']}><DashboardLayout><ManageDrivers /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><DashboardLayout><ManageUsers /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/bookings" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AllBookings /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/pricing" element={<ProtectedRoute roles={['admin']}><DashboardLayout><PricingRules /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/payments" element={<ProtectedRoute roles={['admin']}><DashboardLayout><Payments /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/support" element={<ProtectedRoute roles={['admin']}><DashboardLayout><SupportTickets /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/admin/profile" element={<ProtectedRoute roles={['admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
+
+                {/* Shared */}
+                <Route path="/settings" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
+                <Route path="/change-password" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><ChangePassword /></DashboardLayout></ProtectedRoute>} />
+
+                {/* 404 */}
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </Router>
+    );
+}
+
 function App() {
     return (
         <ErrorBoundary>
             <AuthProvider>
-                <Router>
-                    <RouteProgress />
-                    <Routes>
-                        {/* Public */}
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/forgot-password" element={<ForgotPassword />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/faq" element={<FAQ />} />
-
-                        {/* Customer Routes */}
-                        <Route path="/customer" element={<ProtectedRoute roles={['customer']}><DashboardLayout><CustomerDashboard /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/search" element={<ProtectedRoute roles={['customer']}><DashboardLayout><SearchDrivers /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/driver/:id" element={<ProtectedRoute roles={['customer']}><DashboardLayout><DriverProfile /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/bookings" element={<ProtectedRoute roles={['customer']}><DashboardLayout><MyBookings /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/calendar" element={<ProtectedRoute roles={['customer']}><DashboardLayout><BookingCalendar /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/favorites" element={<ProtectedRoute roles={['customer']}><DashboardLayout><Favorites /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/vehicles" element={<ProtectedRoute roles={['customer']}><DashboardLayout><MyVehicles /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/invoices" element={<ProtectedRoute roles={['customer']}><DashboardLayout><Invoices /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/profile" element={<ProtectedRoute roles={['customer']}><DashboardLayout><CustomerProfile /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/customer/support" element={<ProtectedRoute roles={['customer']}><DashboardLayout><HelpSupport /></DashboardLayout></ProtectedRoute>} />
-
-                        {/* Driver Routes */}
-                        <Route path="/driver" element={<ProtectedRoute roles={['driver']}><DashboardLayout><DriverDashboard /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/driver/jobs" element={<ProtectedRoute roles={['driver']}><DashboardLayout><JobRequests /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/driver/earnings" element={<ProtectedRoute roles={['driver']}><DashboardLayout><Earnings /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/driver/reviews" element={<ProtectedRoute roles={['driver']}><DashboardLayout><DriverReviews /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/driver/profile" element={<ProtectedRoute roles={['driver']}><DashboardLayout><DriverProfilePage /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/driver/support" element={<ProtectedRoute roles={['driver']}><DashboardLayout><HelpSupport /></DashboardLayout></ProtectedRoute>} />
-
-                        {/* Admin Routes */}
-                        <Route path="/admin" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AdminDashboard /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/drivers" element={<ProtectedRoute roles={['admin']}><DashboardLayout><ManageDrivers /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><DashboardLayout><ManageUsers /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/bookings" element={<ProtectedRoute roles={['admin']}><DashboardLayout><AllBookings /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/pricing" element={<ProtectedRoute roles={['admin']}><DashboardLayout><PricingRules /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/payments" element={<ProtectedRoute roles={['admin']}><DashboardLayout><Payments /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/support" element={<ProtectedRoute roles={['admin']}><DashboardLayout><SupportTickets /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/admin/profile" element={<ProtectedRoute roles={['admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
-
-                        {/* Shared */}
-                        <Route path="/settings" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><Settings /></DashboardLayout></ProtectedRoute>} />
-                        <Route path="/change-password" element={<ProtectedRoute roles={['customer', 'driver', 'admin']}><DashboardLayout><ChangePassword /></DashboardLayout></ProtectedRoute>} />
-
-                        {/* 404 */}
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                </Router>
+                <AppContent />
                 <ToastContainer position="top-right" theme="dark" autoClose={3000} />
             </AuthProvider>
         </ErrorBoundary>

@@ -198,7 +198,11 @@ export default function SearchDrivers() {
                         return (
                             <div key={d._id} className="glass-card driver-card" onClick={() => navigate(`/customer/driver/${d._id}`)}>
                                 <div className="driver-avatar">
-                                    {d.userId?.name?.charAt(0)?.toUpperCase() || 'D'}
+                                    {d.userId?.avatar ? (
+                                        <img src={d.userId.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                    ) : (
+                                        d.userId?.name?.charAt(0)?.toUpperCase() || 'D'
+                                    )}
                                 </div>
                                 <div className="driver-info">
                                     <h3>{d.userId?.name || 'Driver'}</h3>

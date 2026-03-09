@@ -93,7 +93,11 @@ export default function ManageDrivers() {
                         <div key={d._id} className="glass-card" style={{ padding: 'var(--space-md)' }}>
                             <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', marginBottom: 'var(--space-sm)', flexWrap: 'wrap' }}>
                                 <div className="driver-avatar" style={{ width: 40, height: 40, flexShrink: 0 }}>
-                                    {d.userId?.name?.charAt(0) || 'D'}
+                                    {d.userId?.avatar ? (
+                                        <img src={d.userId.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                    ) : (
+                                        d.userId?.name?.charAt(0) || 'D'
+                                    )}
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <h4 style={{ margin: 0, fontSize: 'var(--font-sm)' }}>{d.userId?.name} {d.userId?.isBlocked && <span className="badge badge-danger" style={{ fontSize: '9px' }}>Blocked</span>}</h4>

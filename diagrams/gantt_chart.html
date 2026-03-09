@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>DriveHire - Project Development Gantt Chart</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #fff;
+            padding: 40px;
+            color: #333;
+        }
+
+        .chart-container {
+            max-width: 960px;
+            margin: 0 auto;
+            border: 2px solid #333;
+            padding: 30px 30px 20px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 400;
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        .gantt-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .gantt-table th,
+        .gantt-table td {
+            border: 1px solid #ccc;
+            text-align: center;
+            font-size: 11px;
+            padding: 0;
+        }
+
+        .month-header {
+            background: #f0f0f0;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 6px 0;
+        }
+
+        .week-header {
+            background: #fafafa;
+            font-size: 10px;
+            padding: 3px 0;
+            color: #888;
+        }
+
+        .phase-row {
+            height: 44px;
+        }
+
+        .phase-label {
+            text-align: left !important;
+            padding: 0 8px !important;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            width: 260px;
+            min-width: 260px;
+            background: #fafafa;
+        }
+
+        .bar-cell {
+            padding: 6px 2px;
+            position: relative;
+        }
+
+        .bar {
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+        }
+
+        .bar-blue {
+            background: #4A90D9;
+        }
+
+        .bar-green {
+            background: #27AE60;
+        }
+
+        .bar-orange {
+            background: #E67E22;
+        }
+
+        .bar-red {
+            background: #E74C3C;
+        }
+
+        .bar-purple {
+            background: #8E44AD;
+        }
+
+        .bar-teal {
+            background: #1ABC9C;
+        }
+
+        .empty {
+            background: transparent;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 20px;
+            justify-content: center;
+            padding-top: 16px;
+            border-top: 1px solid #ddd;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chart-container">
+        <h1>DriveHire – Project Development Gantt Chart</h1>
+        <h2>Development Timeline: November 2025 – February 2026</h2>
+
+        <table class="gantt-table">
+            <!-- Month Headers -->
+            <tr>
+                <th class="month-header" style="width:260px;"></th>
+                <th class="month-header" colspan="4">November 2025</th>
+                <th class="month-header" colspan="4">December 2025</th>
+                <th class="month-header" colspan="4">January 2026</th>
+                <th class="month-header" colspan="4">February 2026</th>
+            </tr>
+            <!-- Week Headers -->
+            <tr>
+                <th class="week-header">Phase / Week →</th>
+                <th class="week-header">W1</th>
+                <th class="week-header">W2</th>
+                <th class="week-header">W3</th>
+                <th class="week-header">W4</th>
+                <th class="week-header">W5</th>
+                <th class="week-header">W6</th>
+                <th class="week-header">W7</th>
+                <th class="week-header">W8</th>
+                <th class="week-header">W9</th>
+                <th class="week-header">W10</th>
+                <th class="week-header">W11</th>
+                <th class="week-header">W12</th>
+                <th class="week-header">W13</th>
+                <th class="week-header">W14</th>
+                <th class="week-header">W15</th>
+                <th class="week-header">W16</th>
+            </tr>
+
+            <!-- Phase 1 -->
+            <tr class="phase-row">
+                <td class="phase-label">Phase 1: Concept & System Architecture</td>
+                <td class="bar-cell">
+                    <div class="bar bar-blue">Phase 1</div>
+                </td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+            </tr>
+
+            <!-- Phase 2 -->
+            <tr class="phase-row">
+                <td class="phase-label">Phase 2: Database & UI Prototyping</td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell" colspan="2">
+                    <div class="bar bar-green">Phase 2</div>
+                </td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+            </tr>
+
+            <!-- Phase 3 -->
+            <tr class="phase-row">
+                <td class="phase-label">Phase 3: Core Dev – Auth & Driver Module</td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell" colspan="4">
+                    <div class="bar bar-orange">Phase 3</div>
+                </td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+            </tr>
+
+            <!-- Phase 4 -->
+            <tr class="phase-row">
+                <td class="phase-label">Phase 4: Booking, Payment & Review System</td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell" colspan="4">
+                    <div class="bar bar-red">Phase 4</div>
+                </td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+            </tr>
+
+            <!-- Phase 5 -->
+            <tr class="phase-row">
+                <td class="phase-label">Phase 5: Admin Dashboard & Advanced Features</td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell" colspan="3">
+                    <div class="bar bar-purple">Phase 5</div>
+                </td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+            </tr>
+
+            <!-- Phase 6 -->
+            <tr class="phase-row">
+                <td class="phase-label">Phase 6: PWA, Cloudinary & Deployment</td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell"></td>
+                <td class="bar-cell" colspan="2">
+                    <div class="bar bar-teal">Phase 6</div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background:#4A90D9"></div> Phase 1: Concept & System Architecture
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background:#27AE60"></div> Phase 2: Database & UI Prototyping
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background:#E67E22"></div> Phase 3: Core Development – Auth & Driver
+                Module
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background:#E74C3C"></div> Phase 4: Booking, Payment & Review System
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background:#8E44AD"></div> Phase 5: Admin Dashboard & Advanced Features
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background:#1ABC9C"></div> Phase 6: PWA, Cloudinary & Deployment
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -56,7 +56,11 @@ export default function Favorites() {
                         return (
                             <div key={fav._id} className="glass-card driver-card">
                                 <div className="driver-avatar">
-                                    {driver.user?.name?.charAt(0)?.toUpperCase() || 'D'}
+                                    {driver.user?.avatar ? (
+                                        <img src={driver.user.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                                    ) : (
+                                        driver.user?.name?.charAt(0)?.toUpperCase() || 'D'
+                                    )}
                                 </div>
                                 <div className="driver-info">
                                     <h3>{driver.user?.name || 'Driver'}</h3>

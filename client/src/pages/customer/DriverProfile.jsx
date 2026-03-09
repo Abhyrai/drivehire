@@ -129,7 +129,16 @@ export default function DriverProfile() {
             confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
             setTimeout(() => navigate('/customer/bookings'), 1500);
         } catch (err) {
-            toast.error(err.response?.data?.message || 'Booking failed');
+            const msg = err.response?.data?.message;
+            if (msg) {
+                toast.error(msg);
+            } else if (err.response?.status === 503) {
+                toast.error('Server is under maintenance. Please try again later.');
+            } else if (err.response?.status === 401) {
+                toast.error('Session expired. Please login again.');
+            } else {
+                toast.error('Something went wrong. Please check your connection and try again.');
+            }
         } finally {
             setLoading(false);
         }
@@ -160,7 +169,11 @@ export default function DriverProfile() {
                 <div className="glass-card">
                     <div style={{ display: 'flex', gap: 'var(--space-lg)', alignItems: 'center', marginBottom: 'var(--space-xl)' }}>
                         <div className="driver-avatar" style={{ width: 80, height: 80, fontSize: 'var(--font-2xl)' }}>
-                            {driver.userId?.name?.charAt(0)?.toUpperCase() || 'D'}
+                            {driver.userId?.avatar ? (
+                                <img src={driver.userId.avatar} alt="" style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} />
+                            ) : (
+                                driver.userId?.name?.charAt(0)?.toUpperCase() || 'D'
+                            )}
                         </div>
                         <div>
                             <h2>{driver.userId?.name}</h2>
