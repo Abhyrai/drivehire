@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const Driver = require('../models/Driver');
+const { sendPasswordResetEmail, sendWelcomeEmail } = require('../utils/emailService');
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
@@ -37,6 +38,11 @@ exports.register = async (req, res, next) => {
         }
 
         const token = generateToken(user._id);
+
+        // Send welcome email (non-blocking)
+        sendWelcomeEmail(user.email, user.name, user.role).catch(err => {
+            console.error('Welcome email failed:', err.message);
+        });
 
         res.status(201).json({
             success: true,
@@ -126,10 +132,18 @@ exports.forgotPassword = async (req, res, next) => {
         user.resetPasswordExpire = Date.now() + 30 * 60 * 1000;
         await user.save({ validateBeforeSave: false });
 
+        // Send password reset email via Resend
+        const clientUrl = process.env.CLIENT_URL || 'https://drivehire.vercel.app';
+        try {
+            await sendPasswordResetEmail(user.email, resetToken, clientUrl);
+        } catch (emailErr) {
+            console.error('Password reset email failed:', emailErr.message);
+            // Don't fail the request — the token is still generated
+        }
+
         res.json({
             success: true,
-            message: 'Password reset token generated',
-            resetToken
+            message: 'Password reset link sent to your email'
         });
     } catch (error) {
         next(error);
