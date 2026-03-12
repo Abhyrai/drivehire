@@ -1,9 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
 import { useTheme } from '../context/ThemeContext';
-
-const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || 'AIzaSyAbQIPq-4poK4EEjS_QEt6PdRhE7gT8x-0';
-const LIBRARIES = ['places'];
+import { GOOGLE_MAPS_API_KEY, GOOGLE_MAPS_LIBRARIES } from '../config/googleMaps';
 
 const INDIA_CENTER = { lat: 20.5937, lng: 78.9629 };
 const INDIA_BOUNDS = {
@@ -47,7 +45,7 @@ export default function LocationPicker({ onSelect, initial, height = '300px' }) 
 
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: GOOGLE_MAPS_API_KEY,
-        libraries: LIBRARIES
+        libraries: GOOGLE_MAPS_LIBRARIES
     });
 
     const onMapLoad = useCallback((map) => {
