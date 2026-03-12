@@ -221,7 +221,13 @@ exports.createReview = async (req, res, next) => {
         if (!booking) return res.status(400).json({ success: false, message: 'Can only review completed bookings' });
 
         const existingReview = await Review.findOne({ bookingId });
-        if (existingReview) return res.status(400).json({ success: false, message: 'Already reviewed' });
+        if (existingReview) return res.status(400).json({ success: false, message: 'Already reviewed this booking' });
+
+        // Limit: max 3 reviews per customer per driver
+        const reviewCount = await Review.countDocuments({ customerId: req.user._id, driverId: booking.driverId });
+        if (reviewCount >= 3) {
+            return res.status(400).json({ success: false, message: 'You can leave a maximum of 3 reviews for the same driver' });
+        }
 
         const review = await Review.create({
             bookingId,

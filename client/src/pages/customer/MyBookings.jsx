@@ -227,26 +227,42 @@ export default function MyBookings() {
             {/* Review Modal */}
             {reviewModal && (
                 <div className="modal-overlay" onClick={() => setReviewModal(null)}>
-                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: 420 }}>
                         <div className="modal-header">
-                            <h2>Rate Your Driver</h2>
+                            <h2>⭐ Rate Your Driver</h2>
                             <button className="modal-close" onClick={() => setReviewModal(null)}>×</button>
                         </div>
-                        <div className="form-group">
-                            <label className="form-label">Rating</label>
-                            <div className="stars">
+                        <div className="form-group" style={{ textAlign: 'center' }}>
+                            <label className="form-label" style={{ marginBottom: 12 }}>How was your experience?</label>
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: 8, marginBottom: 8 }}>
                                 {[1, 2, 3, 4, 5].map(s => (
-                                    <span key={s} className={`star ${s <= rating ? 'filled' : ''}`}
-                                        onClick={() => setRating(s)}>⭐</span>
+                                    <span key={s}
+                                        onClick={() => setRating(s)}
+                                        onMouseEnter={e => e.target.style.transform = 'scale(1.3)'}
+                                        onMouseLeave={e => e.target.style.transform = 'scale(1)'}
+                                        style={{
+                                            fontSize: '2.2rem',
+                                            cursor: 'pointer',
+                                            transition: 'transform 0.2s, color 0.2s',
+                                            color: s <= rating ? '#f39c12' : 'var(--border-color)',
+                                            filter: s <= rating ? 'drop-shadow(0 0 4px rgba(243,156,18,0.4))' : 'none',
+                                        }}>
+                                        {s <= rating ? '★' : '☆'}
+                                    </span>
                                 ))}
                             </div>
+                            <p style={{ fontSize: 'var(--font-sm)', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                                {rating === 1 ? '😞 Poor' : rating === 2 ? '😐 Below Average' : rating === 3 ? '🙂 Average' : rating === 4 ? '😊 Good' : '🤩 Excellent!'}
+                            </p>
                         </div>
                         <div className="form-group">
-                            <label className="form-label">Comment</label>
-                            <textarea className="form-input" rows={3} placeholder="How was your experience?"
+                            <label className="form-label">Comment (optional)</label>
+                            <textarea className="form-input" rows={3} placeholder="Share your experience with this driver..."
                                 value={comment} onChange={e => setComment(e.target.value)}></textarea>
                         </div>
-                        <button className="btn btn-primary w-full" onClick={handleReview}>Submit Review</button>
+                        <button className="btn btn-primary w-full" onClick={handleReview}>
+                            Submit {rating}-Star Review
+                        </button>
                     </div>
                 </div>
             )}
