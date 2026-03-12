@@ -3,6 +3,7 @@ import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Polyline } from '@react-
 import { useTheme } from '../context/ThemeContext';
 
 const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY || 'AIzaSyAbQIPq-4poK4EEjS_QEt6PdRhE7gT8x-0';
+const LIBRARIES = ['places'];
 
 const INDIA_CENTER = { lat: 20.5937, lng: 78.9629 };
 const INDIA_BOUNDS = {
@@ -70,7 +71,8 @@ export default function MapView({
     const mapRef = useRef(null);
 
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: GOOGLE_MAPS_API_KEY
+        googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+        libraries: LIBRARIES
     });
 
     const mapCenter = Array.isArray(center)
