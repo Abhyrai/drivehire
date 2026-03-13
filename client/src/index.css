@@ -205,6 +205,79 @@ body {
   box-shadow: var(--shadow-lg);
 }
 
+/* Status Timeline */
+.status-timeline {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.timeline-dot {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--glass-bg);
+  transition: all 0.3s;
+}
+
+.timeline-dot.done {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.timeline-dot.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+}
+
+.timeline-line {
+  flex: 1;
+  height: 2px;
+  background: var(--border-color);
+  min-width: 16px;
+  transition: background 0.3s;
+}
+
+.timeline-line.done {
+  background: var(--success);
+}
+
+.timeline-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.timeline-label.done {
+  color: var(--success);
+}
+
+.timeline-label.active {
+  color: var(--primary);
+}
+
 @keyframes cardEntrance {
   from {
     opacity: 0;

@@ -119,36 +119,40 @@ export default function MyBookings() {
                     ) : (
                         <>
                             {paginatedBookings.map(b => (
-                                <div key={b._id} className="glass-card booking-card">
-                                    <div className="booking-card-header">
+                                <div key={b._id} className="glass-card" style={{ overflow: 'hidden' }}>
+                                    {/* Top: Location + Info */}
+                                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginBottom: 12 }}>
                                         <div className={`booking-status-dot ${b.status}`}></div>
-                                        <div className="booking-info" style={{ flex: 1 }}>
-                                            <h4>{b.pickupLocation}</h4>
-                                            <p>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <h4 style={{ margin: 0, fontSize: 'var(--font-base)', wordBreak: 'break-word' }}>{b.pickupLocation}</h4>
+                                            <p className="text-sm text-muted" style={{ margin: '4px 0' }}>
                                                 {b.durationType} • {new Date(b.startTime).toLocaleDateString()} {new Date(b.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                 {' → '}
-                                                {new Date(b.endTime).toLocaleDateString()} {new Date(b.endTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                {new Date(b.endTime).toLocaleDateString()}
                                             </p>
-                                            <p>{b.vehicleId?.make} {b.vehicleId?.model} ({b.vehicleId?.type})</p>
-                                            <p className="text-sm text-muted">{timeAgo(b.createdAt)}</p>
+                                            <p className="text-sm" style={{ margin: 0 }}>{b.vehicleId?.make} {b.vehicleId?.model} ({b.vehicleId?.type})</p>
+                                            <p className="text-sm text-muted" style={{ margin: '2px 0 0' }}>{timeAgo(b.createdAt)}</p>
                                         </div>
                                     </div>
-                                    <div className="booking-card-badges">
+
+                                    {/* Badges row */}
+                                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', marginBottom: 12 }}>
                                         <span className={`badge badge-${statusColor(b.status)}`}>{b.status}</span>
                                         {b.paymentStatus && (
                                             <span className={`badge ${b.paymentStatus === 'paid' ? 'badge-success' : b.paymentStatus === 'refunded' ? 'badge-warning' : 'badge-secondary'}`}>
                                                 {b.paymentStatus === 'paid' ? '💰 Paid' : b.paymentStatus === 'refunded' ? '↩️ Refunded' : `💳 ${(b.paymentMethod || 'cash').toUpperCase()}`}
                                             </span>
                                         )}
-                                        <span className="booking-amount">{formatINR(b.totalPrice)}</span>
+                                        <span style={{ fontWeight: 700, color: 'var(--accent)', marginLeft: 'auto' }}>{formatINR(b.totalPrice)}</span>
                                     </div>
 
                                     {/* Status Timeline */}
-                                    <div style={{ width: '100%' }}>
+                                    <div style={{ marginBottom: 12, overflow: 'hidden' }}>
                                         <StatusTimeline status={b.status} />
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                                    {/* Action buttons */}
+                                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                                         {['pending', 'confirmed'].includes(b.status) && (
                                             <button className="btn btn-danger btn-sm" onClick={() => handleCancel(b._id)}>Cancel</button>
                                         )}
@@ -161,23 +165,22 @@ export default function MyBookings() {
                                         {b.status === 'completed' && (
                                             <button className="btn btn-primary btn-sm" onClick={() => setReviewModal(b._id)}>⭐ Review</button>
                                         )}
-                                        {/* Pay Now — for unpaid online bookings */}
                                         {b.paymentMethod && b.paymentMethod !== 'cash' && b.paymentStatus !== 'paid' && !['cancelled', 'completed'].includes(b.status) && (
                                             <button className="btn btn-primary btn-sm"
                                                 onClick={() => handlePayNow(b)}
-                                                disabled={payLoading === b._id}
-                                                style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                disabled={payLoading === b._id}>
                                                 {payLoading === b._id ? '⏳ Processing...' : '💰 Pay Now'}
                                             </button>
                                         )}
                                     </div>
+
                                     {b.cancellationReason && (
                                         <div className="text-sm text-muted" style={{ marginTop: 8, fontStyle: 'italic' }}>
                                             Cancelled: {b.cancellationReason} (by {b.cancelledBy})
                                         </div>
                                     )}
                                     {msgBookingId === b._id && (
-                                        <div style={{ marginTop: 'var(--space-md)', width: '100%' }}>
+                                        <div style={{ marginTop: 'var(--space-md)' }}>
                                             <QuickMessages bookingId={b._id} bookingStatus={b.status} />
                                         </div>
                                     )}
